@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #690dab;
+  --color-primary-dark: #4a097a;
+  --color-primary-light: #8e3ccb;
+  --color-background-light: #f7f6f8;
+  --color-background-dark: #1a1022;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #2d1b36;
+  --color-text-main: #160d1b;
+  --color-text-muted: #6b5e70;
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-outfit);
+}
+
+@layer utilities {
+  .glass-nav {
+    @apply bg-white/70 backdrop-blur-md border border-white/30;
+  }
+}
