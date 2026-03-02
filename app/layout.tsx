@@ -19,16 +19,20 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   metadataBase: new URL('https://sulvatech.com'),
   title: {
-    default: 'Sulva Tech | Digital Powerhouse',
+    default: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
     template: '%s | Sulva Tech',
   },
   description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
   keywords: ['Software Development', 'Digital Transformation', 'UI/UX Design', 'Brand Strategy', 'Enterprise Software', 'Sulva Tech', 'Tech Agency'],
+  icons: {
+    icon: '/logo.jpg',
+    apple: '/logo.jpg',
+  },
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Sulva Tech | Digital Powerhouse',
+    title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
     description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
     url: 'https://sulvatech.com',
     siteName: 'Sulva Tech',
@@ -37,7 +41,7 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Sulva Tech - Digital Powerhouse',
+        alt: 'Sulva Tech - BUILT TO SOLVE, DESIGNED TO LAST',
       }
     ],
     locale: 'en_US',
@@ -45,7 +49,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sulva Tech | Digital Powerhouse',
+    title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
     description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
     images: ['/og-image.jpg'],
   },

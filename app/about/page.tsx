@@ -5,9 +5,9 @@ import { Rocket, Eye, Diamond, Lightbulb, Shield, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Learn about Sulva Tech, a global digital powerhouse accelerating digital evolution for ambitious brands worldwide through cutting-edge engineering.',
+  description: 'Learn about Sulva Tech, BUILT TO SOLVE, DESIGNED TO LAST - accelerating digital evolution for ambitious brands worldwide through cutting-edge engineering.',
   openGraph: {
-    title: 'About Sulva Tech | Global Digital Powerhouse',
+    title: 'About Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
     description: 'Engineering premium digital experiences that drive tech transformation and accelerate software development.',
   },
 };
@@ -31,7 +31,7 @@ export default function AboutPage() {
 
             <div className="relative z-10 flex flex-col gap-6 text-center max-w-[800px]">
               <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-bold tracking-widest uppercase">
-                Global Digital Powerhouse
+                BUILT TO SOLVE, DESIGNED TO LAST
               </span>
               <h1 className="text-white text-5xl md:text-7xl font-heading font-black leading-[0.95] tracking-tighter">
                 BUILT TO MAKE BRANDS <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-white">UNSTOPPABLE.</span>

@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight, Code, Database, Lightbulb, PenTool } from 'lu
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sulva Tech | Digital Powerhouse',
+  title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
   description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
 };
 
@@ -17,9 +17,9 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
         <div className="flex flex-col gap-6 max-w-5xl mx-auto z-10">
-          <h1 className="text-text-main text-5xl md:text-7xl lg:text-8xl font-heading font-black leading-[1.1] tracking-tighter">
-            WE BUILD <br />
-            <span className="text-primary">DIGITAL POWERHOUSES</span>
+          <h1 className="text-text-main text-5xl md:text-7xl lg:text-8xl font-heading font-black leading-[1.1] tracking-tighter uppercase">
+            Built to Solve <br />
+            <span className="text-primary italic">Designed to Last</span>
           </h1>
           <p className="text-text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
             Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.
