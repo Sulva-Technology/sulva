@@ -76,12 +76,36 @@ const jsonLd = {
     'https://twitter.com/sulvatech',
     'https://linkedin.com/company/sulvatech',
   ],
-  description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
+  description: 'BUILT TO SOLVE, DESIGNED TO LAST - Premium software development and digital transformation.',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lagos',
     addressCountry: 'Nigeria',
   },
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Sulva Tech',
+  url: 'https://sulvatech.com',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://sulvatech.com/search?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const navigationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: [
+    { '@type': 'SiteNavigationElement', position: 1, name: 'Services', url: 'https://sulvatech.com/services' },
+    { '@type': 'SiteNavigationElement', position: 2, name: 'Work', url: 'https://sulvatech.com/work' },
+    { '@type': 'SiteNavigationElement', position: 3, name: 'About', url: 'https://sulvatech.com/about' },
+    { '@type': 'SiteNavigationElement', position: 4, name: 'Insights', url: 'https://sulvatech.com/insights' },
+    { '@type': 'SiteNavigationElement', position: 5, name: 'Contact', url: 'https://sulvatech.com/contact' },
+  ],
 };
 
 export default function RootLayout({
@@ -95,6 +119,14 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
         />
       </head>
       <body className="bg-background-light text-text-main font-sans antialiased min-h-screen flex flex-col">
