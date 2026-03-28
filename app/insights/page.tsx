@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import NewsletterForm from '@/components/NewsletterForm';
-import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Calendar, User, Tag } from 'lucide-react';
+import { ArrowRight, Calendar, User } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Insights',
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 export default function InsightsPage() {
   const articles = [
     {
-      title: 'The Future of Digital Transformation in 2024',
+      title: 'The Future of Digital Transformation',
       category: 'STRATEGY',
       date: 'Oct 12, 2023',
       author: 'David Okafor',
@@ -38,7 +37,7 @@ export default function InsightsPage() {
       category: 'DESIGN',
       date: 'Sep 15, 2023',
       author: 'Michael Chen',
-      excerpt: 'Why investing in user experience is not just about aesthetics—it\'s a critical business driver.',
+      excerpt: 'Why investing in user experience is not just about aesthetics, it is a critical business driver.',
       image: 'https://picsum.photos/id/22/800/600',
       featured: false,
     },
@@ -75,28 +74,27 @@ export default function InsightsPage() {
   const otherArticles = articles.filter((a) => !a.featured);
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
-      <div className="max-w-7xl mx-auto">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase mb-4">
+    <div className="w-full px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-16 text-center">
+          <span className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
             Thought Leadership
           </span>
-          <h1 className="text-4xl md:text-6xl font-heading font-black text-text-main tracking-tight mb-6">
-            INSIGHTS FOR <br />
+          <h1 className="mb-6 font-heading text-4xl font-black tracking-tight text-text-main md:text-6xl">
+            INSIGHTS FOR
+            <br />
             <span className="text-primary">AMBITIOUS BRANDS.</span>
           </h1>
-          <p className="text-text-muted text-lg max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-lg text-text-muted">
             Deep dives into technology, strategy, and design. We share what we learn building the future.
           </p>
         </div>
 
-        {/* Featured Article */}
         {featuredArticle && (
-          <div className="mb-20 relative group cursor-pointer">
-            <div className="absolute inset-0 bg-primary/5 rounded-3xl transform rotate-1 transition-transform group-hover:rotate-2"></div>
-            <div className="relative bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-lg grid md:grid-cols-2 gap-0">
-              <div className="h-64 md:h-auto relative overflow-hidden bg-background-light">
+          <div className="relative mb-20 group">
+            <div className="absolute inset-0 rotate-1 rounded-3xl bg-primary/5 transition-transform group-hover:rotate-2"></div>
+            <div className="relative grid gap-0 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg md:grid-cols-2">
+              <div className="relative h-64 overflow-hidden bg-background-light md:h-auto">
                 <Image
                   src={featuredArticle.image}
                   alt={featuredArticle.title}
@@ -105,104 +103,105 @@ export default function InsightsPage() {
                   priority
                 />
               </div>
-              <div className="p-8 md:p-12 flex flex-col justify-center">
-                <div className="flex items-center gap-4 mb-6 text-sm">
-                  <span className="font-bold text-primary tracking-wider uppercase">{featuredArticle.category}</span>
-                  <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                  <span className="text-text-muted flex items-center gap-1">
+              <div className="flex flex-col justify-center p-8 md:p-12">
+                <div className="mb-6 flex items-center gap-4 text-sm">
+                  <span className="font-bold uppercase tracking-wider text-primary">{featuredArticle.category}</span>
+                  <span className="h-1 w-1 rounded-full bg-gray-300"></span>
+                  <span className="flex items-center gap-1 text-text-muted">
                     <Calendar size={14} /> {featuredArticle.date}
                   </span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-heading font-bold text-text-main mb-4 leading-tight group-hover:text-primary transition-colors">
+                <h2 className="mb-4 font-heading text-3xl font-bold leading-tight text-text-main transition-colors group-hover:text-primary md:text-4xl">
                   {featuredArticle.title}
                 </h2>
-                <p className="text-text-muted text-lg mb-8 leading-relaxed">
+                <p className="mb-8 text-lg leading-relaxed text-text-muted">
                   {featuredArticle.excerpt}
                 </p>
-                <div className="flex items-center justify-between mt-auto">
+                <div className="mt-auto flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500">
                       <User size={20} />
                     </div>
                     <span className="text-sm font-medium text-text-main">{featuredArticle.author}</span>
                   </div>
-                  <span className="inline-flex items-center text-primary font-bold hover:gap-2 transition-all">
-                    Read Article <ArrowRight size={18} className="ml-2" />
-                  </span>
+                  <a href="#newsletter" className="inline-flex items-center font-bold text-primary transition-all hover:gap-2">
+                    Join the Newsletter <ArrowRight size={18} className="ml-2" />
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Categories */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="mb-12 flex flex-wrap justify-center gap-2">
           {['All', 'Strategy', 'Engineering', 'Design', 'Cloud', 'AI & Data', 'Culture'].map((cat) => (
-            <button
+            <span
               key={cat}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${cat === 'All'
-                ? 'bg-text-main text-white'
-                : 'bg-white border border-gray-200 text-text-muted hover:border-primary hover:text-primary'
-                }`}
+              className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
+                cat === 'All'
+                  ? 'bg-text-main text-white'
+                  : 'border border-gray-200 bg-white text-text-muted'
+              }`}
             >
               {cat}
-            </button>
+            </span>
           ))}
         </div>
 
-        {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+        <div className="mb-20 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {otherArticles.map((article, index) => (
-            <div key={index} className="group flex flex-col bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="h-48 relative overflow-hidden bg-background-light">
+            <div
+              key={index}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="relative h-48 overflow-hidden bg-background-light">
                 <Image
                   src={article.image}
                   alt={article.title}
                   fill
                   className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-md text-xs font-bold text-primary uppercase tracking-wider shadow-sm">
+                <div className="absolute left-4 top-4 z-10">
+                  <span className="rounded-md bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary shadow-sm backdrop-blur-sm">
                     {article.category}
                   </span>
                 </div>
               </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <div className="flex items-center gap-3 text-xs text-text-muted mb-3">
+              <div className="flex flex-grow flex-col p-6">
+                <div className="mb-3 flex items-center gap-3 text-xs text-text-muted">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} /> {article.date}
                   </span>
-                  <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                  <span className="h-1 w-1 rounded-full bg-gray-300"></span>
                   <span>{article.author}</span>
                 </div>
-                <h3 className="text-xl font-heading font-bold text-text-main mb-3 leading-snug group-hover:text-primary transition-colors">
+                <h3 className="mb-3 font-heading text-xl font-bold leading-snug text-text-main transition-colors group-hover:text-primary">
                   {article.title}
                 </h3>
-                <p className="text-text-muted text-sm leading-relaxed mb-6 line-clamp-3">
+                <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-text-muted">
                   {article.excerpt}
                 </p>
-                <div className="mt-auto pt-4 border-t border-gray-50">
-                  <span className="inline-flex items-center text-sm font-bold text-primary group-hover:gap-2 transition-all">
-                    Read More <ArrowRight size={16} className="ml-1" />
-                  </span>
+                <div className="mt-auto border-t border-gray-50 pt-4">
+                  <a href="#newsletter" className="inline-flex items-center text-sm font-bold text-primary transition-all group-hover:gap-2">
+                    Get Updates <ArrowRight size={16} className="ml-1" />
+                  </a>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Newsletter */}
-        <div className="bg-surface-dark rounded-3xl p-8 md:p-16 text-center relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-            <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary opacity-20 blur-3xl rounded-full"></div>
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500 opacity-20 blur-3xl rounded-full"></div>
+        <div id="newsletter" className="relative overflow-hidden rounded-3xl bg-surface-dark p-8 text-center md:p-16">
+          <div className="absolute left-0 top-0 z-0 h-full w-full overflow-hidden">
+            <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-primary opacity-20 blur-3xl"></div>
+            <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
           </div>
 
-          <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+          <div className="relative z-10 mx-auto max-w-2xl">
+            <h2 className="mb-4 font-heading text-3xl font-bold text-white md:text-4xl">
               Stay ahead of the curve.
             </h2>
-            <p className="text-gray-300 mb-8">
+            <p className="mb-8 text-gray-300">
               Get the latest insights on technology, design, and strategy delivered straight to your inbox. No spam, just value.
             </p>
             <NewsletterForm />

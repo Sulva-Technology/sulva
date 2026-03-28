@@ -40,12 +40,18 @@ export default function AboutPage() {
                 We engineer premium digital experiences that drive tech transformation and accelerate software development for the world&apos;s most ambitious companies.
               </p>
               <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="h-12 px-8 rounded-full bg-white text-primary font-bold text-base hover:bg-slate-100 transition-colors">
+                <Link
+                  href="/contact"
+                  className="flex h-12 items-center justify-center rounded-full bg-white px-8 text-base font-bold text-primary transition-colors hover:bg-slate-100"
+                >
                   Our Story
-                </button>
-                <button className="h-12 px-8 rounded-full bg-transparent border border-white/30 text-white font-bold text-base hover:bg-white/10 transition-colors backdrop-blur-sm">
+                </Link>
+                <Link
+                  href="/careers"
+                  className="flex h-12 items-center justify-center rounded-full border border-white/30 bg-transparent px-8 text-base font-bold text-white transition-colors hover:bg-white/10 backdrop-blur-sm"
+                >
                   Meet the Team
-                </button>
+                </Link>
               </div>
             </div>
           </div>

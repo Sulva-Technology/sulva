@@ -89,11 +89,6 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'Sulva Tech',
   url: 'https://sulvatech.com',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://sulvatech.com/search?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
 };
 
 const navigationJsonLd = {
