@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import NewsletterForm from '@/components/NewsletterForm';
+import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -12,66 +14,43 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InsightsPage() {
-  const articles = [
-    {
-      title: 'The Future of Digital Transformation',
-      category: 'STRATEGY',
-      date: 'Oct 12, 2023',
-      author: 'David Okafor',
-      excerpt: 'How AI and machine learning are reshaping the enterprise landscape and what leaders need to do to stay ahead.',
-      image: 'https://picsum.photos/id/20/800/600',
-      featured: true,
-    },
-    {
-      title: 'Scaling React Applications for Enterprise',
-      category: 'ENGINEERING',
-      date: 'Sep 28, 2023',
-      author: 'Sarah Jenkins',
-      excerpt: 'Best practices for state management, code splitting, and performance optimization in large-scale React apps.',
-      image: 'https://picsum.photos/id/21/800/600',
-      featured: false,
-    },
-    {
-      title: 'The ROI of Good UX Design',
-      category: 'DESIGN',
-      date: 'Sep 15, 2023',
-      author: 'Michael Chen',
-      excerpt: 'Why investing in user experience is not just about aesthetics, it is a critical business driver.',
-      image: 'https://picsum.photos/id/22/800/600',
-      featured: false,
-    },
-    {
-      title: 'Cloud Native: A Strategic Imperative',
-      category: 'CLOUD',
-      date: 'Aug 30, 2023',
-      author: 'Amara Diop',
-      excerpt: 'Moving beyond "lift and shift" to fully leverage the scalability and resilience of cloud architecture.',
-      image: 'https://picsum.photos/id/23/800/600',
-      featured: false,
-    },
-    {
-      title: 'Data Privacy in the Age of AI',
-      category: 'AI & DATA',
-      date: 'Aug 12, 2023',
-      author: 'David Okafor',
-      excerpt: 'Navigating the complex landscape of data regulations while harnessing the power of artificial intelligence.',
-      image: 'https://picsum.photos/id/24/800/600',
-      featured: false,
-    },
-    {
-      title: 'Building High-Performance Remote Teams',
-      category: 'CULTURE',
-      date: 'Jul 25, 2023',
-      author: 'Sarah Jenkins',
-      excerpt: 'Strategies for fostering collaboration, accountability, and innovation in distributed engineering teams.',
-      image: 'https://picsum.photos/id/25/800/600',
-      featured: false,
-    },
-  ];
+type Insight = {
+  slug: string;
+  title: string;
+  category: string;
+  excerpt: string;
+  author: string;
+  image_url: string | null;
+  published_at: string;
+  featured: boolean;
+};
 
-  const featuredArticle = articles.find((a) => a.featured);
-  const otherArticles = articles.filter((a) => !a.featured);
+function formatPublishDate(value: string) {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(value));
+}
+
+export const dynamic = 'force-dynamic';
+
+export default async function InsightsPage() {
+  const supabase = await createClient();
+  const { data: insights, error } = await supabase
+    .from('insights')
+    .select('slug, title, category, excerpt, author, image_url, published_at, featured')
+    .eq('is_published', true)
+    .order('featured', { ascending: false })
+    .order('published_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to fetch insights:', error);
+  }
+
+  const articles: Insight[] = insights || [];
+  const featuredArticle = articles.find((article) => article.featured) || articles[0];
+  const otherArticles = articles.filter((article) => article.slug !== featuredArticle?.slug);
 
   return (
     <div className="w-full px-4 py-12 sm:px-6 lg:px-8">
@@ -96,7 +75,7 @@ export default function InsightsPage() {
             <div className="relative grid gap-0 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg md:grid-cols-2">
               <div className="relative h-64 overflow-hidden bg-background-light md:h-auto">
                 <Image
-                  src={featuredArticle.image}
+                  src={featuredArticle.image_url || 'https://picsum.photos/id/20/1200/800'}
                   alt={featuredArticle.title}
                   fill
                   className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
@@ -108,7 +87,7 @@ export default function InsightsPage() {
                   <span className="font-bold uppercase tracking-wider text-primary">{featuredArticle.category}</span>
                   <span className="h-1 w-1 rounded-full bg-gray-300"></span>
                   <span className="flex items-center gap-1 text-text-muted">
-                    <Calendar size={14} /> {featuredArticle.date}
+                    <Calendar size={14} /> {formatPublishDate(featuredArticle.published_at)}
                   </span>
                 </div>
                 <h2 className="mb-4 font-heading text-3xl font-bold leading-tight text-text-main transition-colors group-hover:text-primary md:text-4xl">
@@ -124,9 +103,9 @@ export default function InsightsPage() {
                     </div>
                     <span className="text-sm font-medium text-text-main">{featuredArticle.author}</span>
                   </div>
-                  <a href="#newsletter" className="inline-flex items-center font-bold text-primary transition-all hover:gap-2">
-                    Join the Newsletter <ArrowRight size={18} className="ml-2" />
-                  </a>
+                  <Link href={`/insights/${featuredArticle.slug}`} className="inline-flex items-center font-bold text-primary transition-all hover:gap-2">
+                    Read Article <ArrowRight size={18} className="ml-2" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -134,7 +113,7 @@ export default function InsightsPage() {
         )}
 
         <div className="mb-12 flex flex-wrap justify-center gap-2">
-          {['All', 'Strategy', 'Engineering', 'Design', 'Cloud', 'AI & Data', 'Culture'].map((cat) => (
+          {['All', ...new Set(articles.map((article) => article.category))].map((cat) => (
             <span
               key={cat}
               className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
@@ -148,6 +127,11 @@ export default function InsightsPage() {
           ))}
         </div>
 
+        {articles.length === 0 ? (
+          <div className="mb-20 rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center text-text-muted">
+            No published insights yet. Run the database seed to populate the blog.
+          </div>
+        ) : (
         <div className="mb-20 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {otherArticles.map((article, index) => (
             <div
@@ -156,7 +140,7 @@ export default function InsightsPage() {
             >
               <div className="relative h-48 overflow-hidden bg-background-light">
                 <Image
-                  src={article.image}
+                  src={article.image_url || 'https://picsum.photos/id/21/1200/800'}
                   alt={article.title}
                   fill
                   className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
@@ -170,7 +154,7 @@ export default function InsightsPage() {
               <div className="flex flex-grow flex-col p-6">
                 <div className="mb-3 flex items-center gap-3 text-xs text-text-muted">
                   <span className="flex items-center gap-1">
-                    <Calendar size={12} /> {article.date}
+                    <Calendar size={12} /> {formatPublishDate(article.published_at)}
                   </span>
                   <span className="h-1 w-1 rounded-full bg-gray-300"></span>
                   <span>{article.author}</span>
@@ -182,14 +166,15 @@ export default function InsightsPage() {
                   {article.excerpt}
                 </p>
                 <div className="mt-auto border-t border-gray-50 pt-4">
-                  <a href="#newsletter" className="inline-flex items-center text-sm font-bold text-primary transition-all group-hover:gap-2">
-                    Get Updates <ArrowRight size={16} className="ml-1" />
-                  </a>
+                  <Link href={`/insights/${article.slug}`} className="inline-flex items-center text-sm font-bold text-primary transition-all group-hover:gap-2">
+                    Read More <ArrowRight size={16} className="ml-1" />
+                  </Link>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        )}
 
         <div id="newsletter" className="relative overflow-hidden rounded-3xl bg-surface-dark p-8 text-center md:p-16">
           <div className="absolute left-0 top-0 z-0 h-full w-full overflow-hidden">
