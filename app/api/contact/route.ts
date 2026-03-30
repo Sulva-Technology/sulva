@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { enforceRateLimit, getRequestClientKey } from '@/lib/rate-limit';
 import { Resend } from 'resend';
 
 function escapeHtml(value: string) {
@@ -17,15 +18,27 @@ function safeText(value?: string) {
 
 export async function POST(request: Request) {
     try {
+        const rateLimit = enforceRateLimit(getRequestClientKey(request, 'contact'), 5, 60_000);
+        if (!rateLimit.allowed) {
+            return NextResponse.json(
+                { error: 'Too many contact submissions. Please try again shortly.' },
+                { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } }
+            );
+        }
+
         const body = await request.json();
 
         // Basic validation
-        const { name, email, message, company, projectType, budget } = body;
+        const { name, email, message, company, projectType, budget, website } = body;
         if (!name || !email || !message) {
             return NextResponse.json(
                 { error: 'Missing required fields (name, email, message)' },
                 { status: 400 }
             );
+        }
+
+        if (website) {
+            return NextResponse.json({ success: true, message: 'Message received' }, { status: 200 });
         }
 
         const trimmedName = name.trim();
@@ -34,12 +47,31 @@ export async function POST(request: Request) {
         const trimmedCompany = company?.trim() || null;
         const trimmedProjectType = projectType?.trim() || null;
         const trimmedBudget = budget?.trim() || null;
+        const allowedProjectTypes = new Set(['web', 'mobile', 'software', 'branding', 'other']);
+        const allowedBudgets = new Set(['10-25k', '25-50k', '50-100k', '100k+']);
 
-        if (!trimmedName || !trimmedEmail || !trimmedMessage || !trimmedEmail.includes('@')) {
+        if (
+            !trimmedName ||
+            trimmedName.length > 120 ||
+            !trimmedEmail ||
+            trimmedEmail.length > 254 ||
+            !trimmedMessage ||
+            trimmedMessage.length < 20 ||
+            trimmedMessage.length > 5000 ||
+            !trimmedEmail.includes('@')
+        ) {
             return NextResponse.json(
-                { error: 'A valid name, email, and message are required' },
+                { error: 'Please provide a valid name, email, and message with enough detail.' },
                 { status: 400 }
             );
+        }
+
+        if (trimmedProjectType && !allowedProjectTypes.has(trimmedProjectType)) {
+            return NextResponse.json({ error: 'Invalid project type selected' }, { status: 400 });
+        }
+
+        if (trimmedBudget && !allowedBudgets.has(trimmedBudget)) {
+            return NextResponse.json({ error: 'Invalid budget selected' }, { status: 400 });
         }
 
         // 1. Insert into Supabase

@@ -5,50 +5,42 @@ import { ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Our Work',
-  description: 'Explore our portfolio of digital transformation and software engineering excellence. We build systems that scale.',
+  description: 'Explore recent Sulva Tech projects across real estate, ecommerce, personal branding, and education technology.',
   openGraph: {
     title: 'Case Studies & Portfolio | Sulva Tech',
-    description: 'A showcase of high-performance digital products and enterprise solutions delivered globally.',
+    description: 'A showcase of recent websites and digital products built by Sulva Tech.',
   },
 };
 
 export default function WorkPage() {
   const projects = [
     {
-      title: 'Nova Banking App',
-      category: 'FINTECH',
-      desc: 'Reimagining mobile banking for the digital-native generation with AI-driven insights.',
+      title: 'Mindfire Homes',
+      category: 'REAL ESTATE',
+      desc: 'A professional real estate website built to make property discovery, listing exploration, and enquiry flow feel clear on every screen size.',
       image: 'https://picsum.photos/id/6/800/600',
+      href: 'https://mindfirehomes.com',
     },
     {
-      title: 'MediScan AI Portal',
-      category: 'HEALTHCARE AI',
-      desc: 'Advanced diagnostic tools powered by machine learning to assist radiologists.',
+      title: 'Bata Luxury Store',
+      category: 'ECOMMERCE',
+      desc: 'A luxury ecommerce storefront with polished product presentation, cart flow, and checkout built for a premium shopping experience.',
       image: 'https://picsum.photos/id/7/800/600',
+      href: 'https://bata.sulvatech.com',
     },
     {
-      title: 'Global Trade Platform',
-      category: 'E-COMMERCE',
-      desc: 'A scalable B2B marketplace connecting suppliers across 4 continents.',
+      title: 'Iyiola Portfolio',
+      category: 'PERSONAL BRAND',
+      desc: 'A personal portfolio website designed to present work, skills, and identity with clarity, speed, and a strong visual rhythm.',
       image: 'https://picsum.photos/id/8/800/600',
+      href: 'https://iyiola.sulvatech.com',
     },
     {
-      title: 'Fortress Cyber Suite',
-      category: 'SECURITY',
-      desc: 'Enterprise-grade security dashboard for real-time threat monitoring.',
+      title: 'VUI Studify',
+      category: 'EDTECH',
+      desc: 'An AI-powered learning platform that helps students study smarter with quizzes, flashcards, theory support, feedback, and gamified progress.',
       image: 'https://picsum.photos/id/9/800/600',
-    },
-    {
-      title: 'Fleet Streamline',
-      category: 'LOGISTICS',
-      desc: 'Optimizing delivery routes for a national courier service using geolocation API.',
-      image: 'https://picsum.photos/id/10/800/600',
-    },
-    {
-      title: 'LearnLoop Portal',
-      category: 'EDUTECH',
-      desc: 'An interactive learning management system for higher education institutions.',
-      image: 'https://picsum.photos/id/11/800/600',
+      href: 'https://student.sulvatech.com',
     },
   ];
 
@@ -67,30 +59,30 @@ export default function WorkPage() {
           <div className="relative z-20 flex h-full items-center justify-center p-6 text-center">
             <div className="flex max-w-3xl flex-col items-center gap-6">
               <h1 className="font-heading text-4xl font-black leading-tight tracking-tight text-white drop-shadow-sm sm:text-5xl lg:text-6xl">
-                PROJECTS THAT
+                RECENT WORK
                 <br />
-                PROVE THE POINT.
+                THAT SHIPS.
               </h1>
               <p className="max-w-xl text-base font-medium leading-relaxed text-slate-200 sm:text-lg">
-                Explore our portfolio of digital transformation and software engineering excellence. We build systems that scale.
+                A small selection of websites and digital products I have recently delivered across real estate, ecommerce, personal branding, and education.
               </p>
               <Link
                 href="/contact"
                 className="mt-4 flex h-12 items-center justify-center rounded-full bg-white px-8 text-base font-bold text-primary shadow-xl transition-all hover:bg-slate-100"
               >
-                Request Case Studies
+                Discuss Your Project
               </Link>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-6 border-b border-gray-200 py-4 sm:flex-row">
-          <h3 className="font-heading text-2xl font-bold text-text-main">Recent Work</h3>
+          <h3 className="font-heading text-2xl font-bold text-text-main">Selected Projects</h3>
           <div className="flex flex-wrap justify-center gap-2">
             <span className="rounded-full bg-primary px-5 py-2 text-sm font-bold text-white shadow-md shadow-primary/20">
               All
             </span>
-            {['Web', 'Software', 'Branding', 'UI/UX'].map((filter) => (
+            {['Real Estate', 'Ecommerce', 'Portfolio', 'Edtech'].map((filter) => (
               <span
                 key={filter}
                 className="rounded-full bg-gray-100 px-5 py-2 text-sm font-medium text-text-muted"
@@ -127,10 +119,12 @@ export default function WorkPage() {
                   {project.desc}
                 </p>
                 <Link
-                  href="/contact"
+                  href={project.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-2 inline-flex items-center text-sm font-bold text-primary"
                 >
-                  Request This Case Study <ArrowRight size={16} className="ml-1" />
+                  Visit Live Project <ArrowRight size={16} className="ml-1" />
                 </Link>
               </div>
             </div>
@@ -145,7 +139,7 @@ export default function WorkPage() {
             Ready to transform your business?
           </h2>
           <p className="max-w-xl text-lg text-text-muted">
-            Let&apos;s build something extraordinary together. Our team is ready to take on your next challenge.
+            If you want a website that looks sharp, works smoothly across devices, and is built with clean modern tools, let&apos;s map out what yours needs to do.
           </p>
           <Link
             href="/contact"

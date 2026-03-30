@@ -5,7 +5,7 @@ import { Rocket, Eye, Diamond, Lightbulb, Shield, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Learn about Sulva Tech, BUILT TO SOLVE, DESIGNED TO LAST - accelerating digital evolution for ambitious brands worldwide through cutting-edge engineering.',
+  description: 'Learn how Sulva Tech works across strategy, design, and engineering to help teams ship better digital products.',
   openGraph: {
     title: 'About Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
     description: 'Engineering premium digital experiences that drive tech transformation and accelerate software development.',
@@ -37,7 +37,7 @@ export default function AboutPage() {
                 BUILT TO MAKE BRANDS <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-white">UNSTOPPABLE.</span>
               </h1>
               <p className="text-slate-200 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto">
-                We engineer premium digital experiences that drive tech transformation and accelerate software development for the world&apos;s most ambitious companies.
+                Sulva Tech exists to help teams close the gap between ambition and execution with senior product thinking, disciplined delivery, and sharp digital craft.
               </p>
               <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
@@ -81,7 +81,7 @@ export default function AboutPage() {
               </div>
               <div className="relative z-10 mt-auto">
                 <p className="text-2xl md:text-3xl font-medium text-text-main leading-tight">
-                  To accelerate digital evolution for ambitious brands worldwide through cutting-edge engineering.
+                  To help ambitious teams turn complex ideas into software, systems, and digital experiences that are clear, useful, and durable.
                 </p>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function AboutPage() {
               </div>
               <div className="relative z-10 mt-auto">
                 <p className="text-2xl md:text-3xl font-medium text-white leading-tight">
-                  To become the definitive partner for global tech transformation, setting the standard for quality.
+                  To be the partner teams trust when the work matters, the brief is messy, and quality cannot be negotiated away.
                 </p>
               </div>
             </div>
@@ -180,26 +180,26 @@ export default function AboutPage() {
       <section className="px-4 py-20 bg-white">
         <div className="max-w-5xl mx-auto text-center">
           <span className="text-primary text-sm font-bold tracking-widest uppercase mb-3 block">Who We Are</span>
-          <h2 className="text-text-main text-3xl md:text-4xl font-heading font-black tracking-tight mb-12">Built by Builders</h2>
+          <h2 className="text-text-main text-3xl md:text-4xl font-heading font-black tracking-tight mb-12">How We Show Up</h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {[
-              { name: 'David Okafor', role: 'CEO & Founder', img: 'https://picsum.photos/id/64/300/300' },
-              { name: 'Sarah Jenkins', role: 'CTO', img: 'https://picsum.photos/id/65/300/300' },
-              { name: 'Michael Chen', role: 'Head of Design', img: 'https://picsum.photos/id/91/300/300' },
-              { name: 'Amara Diop', role: 'Lead Engineer', img: 'https://picsum.photos/id/103/300/300' },
-            ].map((member, index) => (
+              { name: 'Strategy', role: 'Sharper decisions before delivery', img: 'https://picsum.photos/id/64/300/300' },
+              { name: 'Design', role: 'Interfaces that reduce friction', img: 'https://picsum.photos/id/65/300/300' },
+              { name: 'Engineering', role: 'Reliable systems and clean execution', img: 'https://picsum.photos/id/91/300/300' },
+              { name: 'Partnership', role: 'Clear communication from start to launch', img: 'https://picsum.photos/id/103/300/300' },
+            ].map((pillar, index) => (
               <div key={index} className="flex flex-col items-center group">
                 <div className="w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-transparent group-hover:border-primary transition-all duration-300 relative bg-background-light">
                   <Image
-                    src={member.img}
-                    alt={member.name}
+                    src={pillar.img}
+                    alt={pillar.name}
                     fill
                     className="object-cover object-center filter grayscale group-hover:grayscale-0 transition-all duration-500"
                   />
                 </div>
-                <h4 className="text-text-main font-bold text-lg">{member.name}</h4>
-                <p className="text-sm text-text-muted">{member.role}</p>
+                <h4 className="text-text-main font-bold text-lg">{pillar.name}</h4>
+                <p className="text-sm text-text-muted">{pillar.role}</p>
               </div>
             ))}
           </div>
@@ -210,7 +210,7 @@ export default function AboutPage() {
       <section className="py-20 px-4 bg-primary text-white text-center">
         <div className="max-w-2xl mx-auto flex flex-col gap-6 items-center">
           <h2 className="text-3xl md:text-5xl font-heading font-black tracking-tight">Ready to build the future?</h2>
-          <p className="text-purple-100 text-lg">Let&apos;s collaborate to bring your vision to life with world-class engineering.</p>
+          <p className="text-purple-100 text-lg">If you need a team that can think clearly and execute well, we should talk.</p>
           <Link
             href="/contact"
             className="bg-white text-primary px-8 py-3 rounded-full font-bold text-lg hover:bg-slate-100 transition-colors shadow-lg"

@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
-  description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
+  description: 'Sulva Tech helps teams design, build, and ship digital products with senior-led strategy, engineering, and product execution.',
 };
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
             <span className="text-primary italic">Designed to Last</span>
           </h1>
           <p className="text-text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.
+            Sulva Tech partners with ambitious teams to shape product strategy, ship reliable software, and create digital experiences that keep compounding after launch.
           </p>
         </div>
 
@@ -43,24 +43,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="max-w-7xl mx-auto px-6 mb-32">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-y border-gray-100 py-12">
-          {[
-            { label: 'Projects Delivered', value: '200+' },
-            { label: 'Client Retention', value: '98%' },
-            { label: 'Years Excellence', value: '10+' },
-            { label: 'Global Offices', value: '5' },
-          ].map((stat, index) => (
-            <div key={index} className="flex flex-col items-center justify-center text-center">
-              <span className="text-3xl md:text-4xl font-heading font-bold text-text-main">
-                {stat.value}
+      {/* Recent Build Section */}
+      <section className="max-w-7xl mx-auto px-6 mb-28">
+        <div className="flex flex-col gap-8 border-y border-gray-100 py-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div className="max-w-2xl">
+              <span className="text-primary text-sm font-bold tracking-widest uppercase mb-3 block">
+                Recent Builds
               </span>
-              <span className="text-xs md:text-sm text-text-muted mt-2 font-medium uppercase tracking-wider">
-                {stat.label}
-              </span>
+              <h2 className="text-text-main text-3xl md:text-4xl font-heading font-black tracking-tight mb-3">
+                Real projects, shipped recently.
+              </h2>
+              <p className="text-text-muted text-lg leading-relaxed">
+                A snapshot of the kinds of websites and digital products we&apos;ve recently delivered across real estate, ecommerce, personal branding, and education.
+              </p>
             </div>
-          ))}
+            <Link
+              href="/work"
+              className="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all whitespace-nowrap group"
+            >
+              See Full Work
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { name: 'Mindfire Homes', type: 'Real Estate', href: 'https://mindfirehomes.com' },
+              { name: 'Bata Store', type: 'Ecommerce', href: 'https://bata.sulvatech.com' },
+              { name: 'Iyiola Portfolio', type: 'Personal Brand', href: 'https://iyiola.sulvatech.com' },
+              { name: 'VUI Studify', type: 'EdTech', href: 'https://student.sulvatech.com' },
+            ].map((project) => (
+              <a
+                key={project.name}
+                href={project.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl border border-gray-200 bg-white px-5 py-6 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+              >
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-text-muted">
+                  {project.type}
+                </span>
+                <h3 className="mt-3 text-xl font-heading font-bold text-text-main group-hover:text-primary transition-colors">
+                  {project.name}
+                </h3>
+                <span className="mt-6 inline-flex items-center text-sm font-bold text-primary">
+                  Visit Site
+                  <ArrowUpRight size={16} className="ml-2" />
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -72,7 +105,7 @@ export default function Home() {
               Our Expertise
             </h2>
             <p className="text-text-muted text-lg">
-              Comprehensive digital solutions tailored for enterprise growth. We don&apos;t just build software; we engineer success.
+              Strategy, product design, and software delivery aligned around one goal: helping teams move from idea to launch without losing clarity or quality.
             </p>
           </div>
           <Link
@@ -88,23 +121,23 @@ export default function Home() {
           {[
             {
               icon: Code,
-              title: 'Web Development',
-              desc: 'High-performance web applications built for scale using modern frameworks like React, Next.js, and Node.js.',
+              title: 'Product Engineering',
+              desc: 'Web platforms, internal tools, and customer-facing products built with modern stacks and strong delivery discipline.',
             },
             {
               icon: Database,
-              title: 'Enterprise Software',
-              desc: 'Custom software ecosystems designed to streamline complex operations, secure data, and boost productivity.',
+              title: 'Platform & Systems',
+              desc: 'Operational software, integrations, and backend architecture designed to support growth without creating team drag.',
             },
             {
               icon: Lightbulb,
-              title: 'Brand Strategy',
-              desc: 'Strategic branding that defines market presence. We craft narratives that resonate and visual identities that endure.',
+              title: 'Product & Brand Direction',
+              desc: 'Clear messaging, product positioning, and digital direction that help teams sound as sharp as the work they ship.',
             },
             {
               icon: PenTool,
-              title: 'UI/UX Design',
-              desc: 'User-centric design creating intuitive experiences. We blend aesthetics with usability for maximum engagement.',
+              title: 'Design Systems & UX',
+              desc: 'Interfaces, flows, and design systems that reduce friction, improve clarity, and hold up across real product use.',
             },
           ].map((service, index) => (
             <div
@@ -139,7 +172,7 @@ export default function Home() {
           <div className="absolute inset-0 opacity-20 mix-blend-overlay">
             <Image
               src="https://picsum.photos/id/1/1920/1080"
-              alt="Background Texture"
+              alt="Creative technology workspace"
               fill
               className="object-cover object-center"
               priority={false}
@@ -148,16 +181,16 @@ export default function Home() {
 
           <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center gap-8">
             <h2 className="text-white text-4xl md:text-6xl font-heading font-black tracking-tight leading-tight">
-              Ready to transform your digital presence?
+              Ready to move from ideas to execution?
             </h2>
             <p className="text-gray-300 text-lg md:text-xl max-w-xl">
-              Let&apos;s collaborate to build something extraordinary. Your vision, our expertise.
+              Bring the brief, the messy context, or the half-finished roadmap. We&apos;ll help turn it into something clear, usable, and launchable.
             </p>
             <Link
               href="/contact"
               className="bg-white text-primary hover:bg-gray-100 rounded-full h-14 px-10 text-lg font-bold transition-transform hover:scale-105 shadow-lg flex items-center justify-center"
             >
-              Schedule a Consultation
+              Start the Conversation
             </Link>
           </div>
         </div>

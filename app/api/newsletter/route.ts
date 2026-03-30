@@ -1,12 +1,21 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { enforceRateLimit, getRequestClientKey } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
     try {
+        const rateLimit = enforceRateLimit(getRequestClientKey(request, 'newsletter'), 8, 60_000);
+        if (!rateLimit.allowed) {
+            return NextResponse.json(
+                { error: 'Too many subscription attempts. Please try again shortly.' },
+                { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } }
+            );
+        }
+
         const { email } = await request.json();
         const normalizedEmail = email?.trim().toLowerCase();
 
-        if (!normalizedEmail || !normalizedEmail.includes('@')) {
+        if (!normalizedEmail || !normalizedEmail.includes('@') || normalizedEmail.length > 254) {
             return NextResponse.json(
                 { error: 'A valid email address is required' },
                 { status: 400 }

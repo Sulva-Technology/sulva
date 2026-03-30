@@ -21,6 +21,7 @@ type Insight = {
   excerpt: string;
   author: string;
   image_url: string | null;
+  website_url: string | null;
   published_at: string;
   featured: boolean;
 };
@@ -39,7 +40,7 @@ export default async function InsightsPage() {
   const supabase = await createClient();
   const { data: insights, error } = await supabase
     .from('insights')
-    .select('slug, title, category, excerpt, author, image_url, published_at, featured')
+    .select('slug, title, category, excerpt, author, image_url, website_url, published_at, featured')
     .eq('is_published', true)
     .order('featured', { ascending: false })
     .order('published_at', { ascending: false });
@@ -103,9 +104,21 @@ export default async function InsightsPage() {
                     </div>
                     <span className="text-sm font-medium text-text-main">{featuredArticle.author}</span>
                   </div>
-                  <Link href={`/insights/${featuredArticle.slug}`} className="inline-flex items-center font-bold text-primary transition-all hover:gap-2">
-                    Read Article <ArrowRight size={18} className="ml-2" />
-                  </Link>
+                  <div className="flex items-center gap-4">
+                    {featuredArticle.website_url && (
+                      <a
+                        href={featuredArticle.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center font-bold text-text-main transition-colors hover:text-primary"
+                      >
+                        Visit Website
+                      </a>
+                    )}
+                    <Link href={`/insights/${featuredArticle.slug}`} className="inline-flex items-center font-bold text-primary transition-all hover:gap-2">
+                      Read Article <ArrowRight size={18} className="ml-2" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
@@ -165,7 +178,19 @@ export default async function InsightsPage() {
                 <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-text-muted">
                   {article.excerpt}
                 </p>
-                <div className="mt-auto border-t border-gray-50 pt-4">
+                <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-4 gap-4">
+                  {article.website_url ? (
+                    <a
+                      href={article.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-bold text-text-main transition-colors hover:text-primary"
+                    >
+                      Visit Website
+                    </a>
+                  ) : (
+                    <span className="text-sm font-medium text-gray-400">Project Link Coming Soon</span>
+                  )}
                   <Link href={`/insights/${article.slug}`} className="inline-flex items-center text-sm font-bold text-primary transition-all group-hover:gap-2">
                     Read More <ArrowRight size={16} className="ml-1" />
                   </Link>

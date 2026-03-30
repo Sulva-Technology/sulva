@@ -21,7 +21,7 @@ async function getInsight(slug: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('insights')
-    .select('slug, title, category, excerpt, content, author, image_url, published_at')
+    .select('slug, title, category, excerpt, content, author, image_url, website_url, published_at')
     .eq('slug', slug)
     .eq('is_published', true)
     .maybeSingle();
@@ -85,6 +85,16 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
             <User size={14} />
             {insight.author}
           </span>
+          {insight.website_url && (
+            <a
+              href={insight.website_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-primary transition-colors hover:text-primary-dark"
+            >
+              Visit Live Website
+            </a>
+          )}
         </div>
 
         <h1 className="mb-6 font-heading text-4xl font-black tracking-tight text-text-main md:text-6xl">

@@ -11,6 +11,7 @@ export default function ContactPage() {
     projectType: '',
     budget: '',
     message: '',
+    website: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +65,7 @@ export default function ContactPage() {
               </span>
             </h1>
             <p className="text-gray-300 text-lg leading-relaxed max-w-md mb-12">
-              Have a project in mind? We&apos;d love to hear about it. Tell us a bit about your goals and we&apos;ll get back to you within 24 hours.
+              If you&apos;re planning a launch, reworking a product, or trying to untangle an overloaded roadmap, send the context and we&apos;ll take it from there.
             </p>
 
             <div className="space-y-8">
@@ -73,9 +74,9 @@ export default function ContactPage() {
                   <Mail size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Email Us</h3>
-                  <p className="text-gray-400">hello@sulvatech.com</p>
-                  <p className="text-gray-400">careers@sulvatech.com</p>
+                  <h3 className="font-bold text-lg mb-1">Project Enquiries</h3>
+                  <p className="text-gray-400">Use the form to share your goals, scope, and timeline.</p>
+                  <p className="text-gray-400">We&apos;ll reply from the contact address configured for this deployment.</p>
                 </div>
               </div>
 
@@ -84,9 +85,9 @@ export default function ContactPage() {
                   <MapPin size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Visit Us</h3>
-                  <p className="text-gray-400">123 Innovation Drive, Suite 400</p>
-                  <p className="text-gray-400">Lagos, Nigeria 100001</p>
+                  <h3 className="font-bold text-lg mb-1">Where We Work</h3>
+                  <p className="text-gray-400">Remote-first delivery with project coordination anchored in Lagos, Nigeria.</p>
+                  <p className="text-gray-400">Built for distributed teams and cross-time-zone collaboration.</p>
                 </div>
               </div>
 
@@ -95,9 +96,9 @@ export default function ContactPage() {
                   <Phone size={24} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1">Call Us</h3>
-                  <p className="text-gray-400">+234 (0) 123 456 7890</p>
-                  <p className="text-gray-400">Mon-Fri from 9am to 6pm WAT</p>
+                  <h3 className="font-bold text-lg mb-1">Response Window</h3>
+                  <p className="text-gray-400">Most enquiries get a first reply within one business day.</p>
+                  <p className="text-gray-400">For active projects, we align on communication cadence during kickoff.</p>
                 </div>
               </div>
             </div>
@@ -107,9 +108,9 @@ export default function ContactPage() {
             <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-gray-400">Our Process</h4>
             <div className="flex flex-col sm:flex-row gap-8">
               {[
-                { step: '01', title: 'Discovery', desc: 'We dive deep into your goals.' },
-                { step: '02', title: 'Design', desc: 'We craft the perfect solution.' },
-                { step: '03', title: 'Launch', desc: 'We bring your vision to life.' },
+                { step: '01', title: 'Discovery', desc: 'We clarify the problem, constraints, and goals.' },
+                { step: '02', title: 'Scope', desc: 'We define the right shape of work and delivery path.' },
+                { step: '03', title: 'Execution', desc: 'We ship with clear communication and momentum.' },
               ].map((item) => (
                 <div key={item.step}>
                   <span className="text-primary font-black text-2xl block mb-2">{item.step}</span>
@@ -231,6 +232,16 @@ export default function ContactPage() {
                 </div>
 
                 <div className="space-y-2">
+                  <input
+                    type="text"
+                    name="website"
+                    value={formState.website}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    className="hidden"
+                    aria-hidden="true"
+                  />
                   <label htmlFor="message" className="text-sm font-bold text-text-main uppercase tracking-wide">
                     Project Details
                   </label>

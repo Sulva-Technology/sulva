@@ -9,7 +9,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Services',
-  description: 'Full-stack digital execution. Scalable web development, enterprise software, brand strategy, and UI/UX design tailored for growth.',
+  description: 'Senior-led strategy, product design, and software delivery for teams building serious digital products.',
   openGraph: {
     title: 'Digital Services | Sulva Tech',
     description: 'Comprehensive digital solutions: Web, Software, Brand, and UI/UX designed for enterprise growth.',
@@ -31,11 +31,11 @@ export default function ServicesPage() {
           </span>
         </h1>
         <p className="text-lg md:text-xl text-text-muted max-w-2xl leading-relaxed">
-          We build rigorous, scalable, and beautiful digital products that transform businesses and define industries.
+          We help teams scope the right work, design it clearly, and ship it with the discipline needed for real-world use.
         </p>
 
         <div className="mt-12 flex flex-wrap gap-4 justify-center">
-          {['Global Reach', 'Enterprise Ready', 'Award Winning'].map((badge) => (
+          {['Senior-Led', 'Product-Focused', 'Built to Ship'].map((badge) => (
             <div key={badge} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm">
               <div className="text-primary">
                 <Shield size={18} />
@@ -57,15 +57,15 @@ export default function ServicesPage() {
               Web Development
             </h2>
             <p className="text-text-muted text-lg leading-relaxed">
-              Scalable, secure, and lightning-fast websites built for growth. We leverage the latest frameworks to deliver seamless user experiences that convert visitors into loyal customers.
+              Marketing sites, product surfaces, and web applications built for speed, clarity, and maintainability. We focus on clean architecture, strong UX, and launch readiness.
             </p>
 
             <div className="grid grid-cols-2 gap-4 mt-2">
               {[
                 { icon: Code, label: 'React / Next.js' },
-                { icon: Database, label: 'Headless CMS' },
+                { icon: Database, label: 'CMS & Content' },
                 { icon: Zap, label: 'Performance' },
-                { icon: ShoppingCart, label: 'E-Commerce' },
+                { icon: ShoppingCart, label: 'Commerce Flows' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-background-light border border-gray-100">
                   <item.icon size={20} className="text-primary" />
@@ -126,15 +126,15 @@ export default function ServicesPage() {
               Software Development
             </h2>
             <p className="text-text-muted text-lg leading-relaxed">
-              Custom software solutions tailored to your complex business needs. From enterprise ERPs to niche SaaS products, we architect systems that scale with your ambition.
+              Internal tools, operational systems, and customer platforms designed around the way your team actually works. We build for reliability first, then scale.
             </p>
 
             <div className="grid grid-cols-2 gap-4 mt-2">
               {[
                 { icon: Database, label: 'Cloud Architecture' },
                 { icon: Code, label: 'API Integration' },
-                { icon: Layout, label: 'DevOps CI/CD' },
-                { icon: Shield, label: 'Cybersecurity' },
+                { icon: Layout, label: 'Delivery Workflows' },
+                { icon: Shield, label: 'Security Reviews' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-white border border-gray-200">
                   <item.icon size={20} className="text-primary" />
@@ -164,13 +164,13 @@ export default function ServicesPage() {
               Brand Strategy
             </h2>
             <p className="text-text-muted text-lg leading-relaxed">
-              We don&apos;t just build products; we build brands. Our strategic approach ensures your digital presence aligns perfectly with your business goals and speaks directly to your target audience.
+              When the product is strong but the story is muddy, we help sharpen the narrative. Positioning, messaging, and digital identity all need to support the same business direction.
             </p>
 
             <div className="grid grid-cols-2 gap-4 mt-2">
               {[
                 { icon: BarChart, label: 'Market Research' },
-                { icon: Users, label: 'Identity Design' },
+                { icon: Users, label: 'Identity Systems' },
                 { icon: Zap, label: 'Positioning' },
                 { icon: PenTool, label: 'Storytelling' },
               ].map((item, i) => (
@@ -232,7 +232,7 @@ export default function ServicesPage() {
               UI/UX Design
             </h2>
             <p className="text-text-muted text-lg leading-relaxed">
-              Design that works as beautifully as it looks. Our user-centric approach combines aesthetics with usability to create intuitive interfaces that delight users and drive engagement.
+              Product design that turns complexity into momentum. We design flows, interfaces, and systems that feel polished without slowing teams down.
             </p>
 
             <div className="grid grid-cols-2 gap-4 mt-2">
@@ -240,7 +240,7 @@ export default function ServicesPage() {
                 { icon: Layout, label: 'Visual Design' },
                 { icon: Smartphone, label: 'Prototyping' },
                 { icon: Globe, label: 'Responsive' },
-                { icon: Users, label: 'Accessibility' },
+                { icon: Users, label: 'Usability' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-white border border-gray-200">
                   <item.icon size={20} className="text-primary" />
@@ -272,7 +272,7 @@ export default function ServicesPage() {
             Ready to transform your business?
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl">
-            Get a comprehensive, itemized quote with no hidden fees. We believe in complete transparency and partnership from day one.
+            Whether you need a senior delivery partner, a product reset, or a team to execute from brief to launch, we can scope the right next step with you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center pt-4">
             <Link
