@@ -19,13 +19,21 @@ CREATE POLICY "Admin users can read their own membership" ON public.admin_users
 CREATE TABLE IF NOT EXISTS public.contacts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     company TEXT,
     "projectType" TEXT,
     budget TEXT,
+    status TEXT DEFAULT 'new' NOT NULL,
+    notes TEXT,
     message TEXT NOT NULL
 );
+
+ALTER TABLE public.contacts
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'new' NOT NULL,
+    ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- Enable Row Level Security (RLS) for contacts
 ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
@@ -52,8 +60,14 @@ CREATE POLICY "Enable full access for admin users" ON public.contacts
 CREATE TABLE IF NOT EXISTS public.subscribers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    notes TEXT,
     email TEXT NOT NULL UNIQUE
 );
+
+ALTER TABLE public.subscribers
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    ADD COLUMN IF NOT EXISTS notes TEXT;
 
 -- Enable Row Level Security (RLS) for subscribers
 ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
@@ -80,17 +94,42 @@ CREATE POLICY "Enable full access for admin users" ON public.subscribers
 CREATE TABLE IF NOT EXISTS public.insights (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     slug TEXT NOT NULL UNIQUE,
     title TEXT NOT NULL,
     category TEXT NOT NULL,
     excerpt TEXT NOT NULL,
     content TEXT NOT NULL,
     author TEXT NOT NULL,
+    author_role TEXT,
     image_url TEXT,
+    og_image_url TEXT,
+    website_url TEXT,
+    seo_title TEXT,
+    seo_description TEXT,
+    canonical_url TEXT,
+    status TEXT DEFAULT 'draft' NOT NULL,
     featured BOOLEAN DEFAULT false NOT NULL,
     is_published BOOLEAN DEFAULT true NOT NULL,
-    published_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    published_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
+
+ALTER TABLE public.insights
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    ADD COLUMN IF NOT EXISTS author_role TEXT,
+    ADD COLUMN IF NOT EXISTS og_image_url TEXT,
+    ADD COLUMN IF NOT EXISTS website_url TEXT,
+    ADD COLUMN IF NOT EXISTS seo_title TEXT,
+    ADD COLUMN IF NOT EXISTS seo_description TEXT,
+    ADD COLUMN IF NOT EXISTS canonical_url TEXT,
+    ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'draft' NOT NULL;
+
+ALTER TABLE public.insights
+    ALTER COLUMN published_at DROP NOT NULL;
+
+UPDATE public.insights
+SET status = CASE WHEN is_published THEN 'published' ELSE 'draft' END
+WHERE status IS NULL OR status = '';
 
 ALTER TABLE public.insights ENABLE ROW LEVEL SECURITY;
 
@@ -109,17 +148,43 @@ CREATE POLICY "Enable full access for admin users" ON public.insights
         )
     );
 
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = timezone('utc'::text, now());
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS set_contacts_updated_at ON public.contacts;
+CREATE TRIGGER set_contacts_updated_at
+    BEFORE UPDATE ON public.contacts
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+DROP TRIGGER IF EXISTS set_subscribers_updated_at ON public.subscribers;
+CREATE TRIGGER set_subscribers_updated_at
+    BEFORE UPDATE ON public.subscribers
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+DROP TRIGGER IF EXISTS set_insights_updated_at ON public.insights;
+CREATE TRIGGER set_insights_updated_at
+    BEFORE UPDATE ON public.insights
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
 
 -- ==========================================
 -- SEED DATA (Optional: Run this to add demo data to your dashboard)
 -- ==========================================
 
 -- Seed Contacts
-INSERT INTO public.contacts (name, email, company, "projectType", budget, message)
+INSERT INTO public.contacts (name, email, company, "projectType", budget, status, notes, message)
 VALUES
-    ('Alice Smith', 'alice@example.com', 'TechCorp', 'Web Development', '$10k-$25k', 'We need a new corporate website with a CMS.'),
-    ('Bob Jones', 'bob@startup.io', 'Startup.io', 'Mobile App', '$25k+', 'Looking to build a cross-platform mobile application.'),
-    ('Charlie Brown', 'charlie@designstudios.com', 'Design Studios', 'UI/UX Design', '$5k-$10k', 'We need help redesigning our administrative dashboard.')
+    ('Alice Smith', 'alice@example.com', 'TechCorp', 'Web Development', '$10k-$25k', 'qualified', 'Interested in a Q2 redesign and CMS migration.', 'We need a new corporate website with a CMS.'),
+    ('Bob Jones', 'bob@startup.io', 'Startup.io', 'Mobile App', '$25k+', 'in_review', 'Waiting on product roadmap documents.', 'Looking to build a cross-platform mobile application.'),
+    ('Charlie Brown', 'charlie@designstudios.com', 'Design Studios', 'UI/UX Design', '$5k-$10k', 'replied', 'Intro email sent with discovery call options.', 'We need help redesigning our administrative dashboard.')
 ON CONFLICT DO NOTHING;
 
 -- Seed Subscribers
@@ -132,7 +197,7 @@ VALUES
 ON CONFLICT (email) DO NOTHING;
 
 -- Seed Insights
-INSERT INTO public.insights (slug, title, category, excerpt, content, author, image_url, featured, is_published, published_at)
+INSERT INTO public.insights (slug, title, category, excerpt, content, author, author_role, image_url, og_image_url, website_url, seo_title, seo_description, canonical_url, status, featured, is_published, published_at)
 VALUES
     (
         'ai-agents-are-redesigning-modern-software-teams',
@@ -143,7 +208,14 @@ VALUES
         'This changes how software teams are organized. Product managers can run discovery faster, engineers can automate maintenance and repetitive fixes, and operators can reduce time spent on routing and reconciliation. The immediate opportunity is not replacing people. It is helping strong teams spend more time on judgment and less time on busywork.' || E'\n\n' ||
         'The teams getting the most value are building with guardrails. They define ownership, review checkpoints, and clear limits for what an agent can do without approval. That combination of autonomy and control is quickly becoming a core capability for modern digital organizations.',
         'Sulva Tech Editorial',
-        'https://picsum.photos/id/20/1200/800',
+        'Editorial Team',
+        '/og-image.jpg',
+        '/og-image.jpg',
+        'https://sulvatech.com/services',
+        'AI Agents Are Redesigning Modern Software Teams',
+        'How autonomous workflows are reshaping modern software teams and operating models.',
+        'https://sulvatech.com/insights/ai-agents-are-redesigning-modern-software-teams',
+        'published',
         true,
         true,
         '2026-03-03T09:00:00Z'
@@ -157,7 +229,14 @@ VALUES
         'A dependable AI stack usually includes a retrieval layer, a strong application boundary, event logging, and clear failure handling. It also includes measurement. If a team cannot compare prompts, trace outputs, and review edge cases, it cannot improve the product with confidence.' || E'\n\n' ||
         'Reliability becomes a product advantage when teams invest in operational clarity early. The winners will not be the teams with the flashiest demos. They will be the ones that make AI features understandable, measurable, and trustworthy at scale.',
         'Sarah Jenkins',
-        'https://picsum.photos/id/21/1200/800',
+        'Engineering Lead',
+        '/og-image.jpg',
+        '/og-image.jpg',
+        'https://sulvatech.com/services',
+        'The New Stack for Building Reliable AI Products',
+        'Infrastructure patterns that separate toy AI demos from reliable, scalable products.',
+        'https://sulvatech.com/insights/the-new-stack-for-building-reliable-ai-products',
+        'published',
         false,
         true,
         '2026-02-19T09:00:00Z'
@@ -171,7 +250,14 @@ VALUES
         'This is especially important for growing teams. When multiple contributors are shipping quickly, shared standards reduce review friction and help teams preserve quality under pressure. The design system becomes a strategic asset because it protects trust. Customers notice when interfaces feel aligned, predictable, and intentional.' || E'\n\n' ||
         'The best systems are not static libraries. They are living operating tools that align designers, engineers, marketers, and product teams around one product voice.',
         'Michael Chen',
-        'https://picsum.photos/id/22/1200/800',
+        'Design Systems Strategist',
+        '/og-image.jpg',
+        '/og-image.jpg',
+        'https://sulvatech.com/services',
+        'Why Design Systems Matter More in the Age of AI',
+        'Why strong design systems are essential when AI accelerates product output.',
+        'https://sulvatech.com/insights/why-design-systems-matter-more-in-the-age-of-ai',
+        'published',
         false,
         true,
         '2026-01-28T09:00:00Z'
@@ -185,7 +271,14 @@ VALUES
         'This shift changes priorities. Identity boundaries, audit trails, incident readiness, data minimization, and access controls become product decisions. They influence onboarding, collaboration, analytics, and support. When designed well, security feels like confidence rather than friction.' || E'\n\n' ||
         'Organizations that invest early are seeing more than reduced risk. They are earning trust faster, passing procurement checks more smoothly, and creating a stronger foundation for scaling partnerships.',
         'Amara Diop',
-        'https://picsum.photos/id/23/1200/800',
+        'Security Strategy Advisor',
+        '/og-image.jpg',
+        '/og-image.jpg',
+        'https://sulvatech.com/contact',
+        'Cyber Resilience Is Now a Product Strategy',
+        'Why cyber resilience now shapes product strategy, trust, and revenue outcomes.',
+        'https://sulvatech.com/insights/cyber-resilience-is-now-a-product-strategy',
+        'published',
         false,
         true,
         '2025-12-11T09:00:00Z'

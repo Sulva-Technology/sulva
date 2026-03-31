@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
-async function getAdminMembership(userId: string) {
+export async function getAdminMembership(userId: string) {
     const supabase = await createClient();
 
     const { data, error } = await supabase
@@ -35,4 +35,23 @@ export async function requireAdminUser() {
     }
 
     return { supabase, user };
+}
+
+export async function getAdminRouteContext() {
+    const supabase = await createClient();
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        return { supabase, user: null, isAdmin: false };
+    }
+
+    const membership = await getAdminMembership(user.id);
+
+    return {
+        supabase,
+        user,
+        isAdmin: Boolean(membership),
+    };
 }

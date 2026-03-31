@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { enforceRateLimit, getRequestClientKey } from '@/lib/rate-limit';
+import { reportError } from '@/lib/monitoring';
 
 export async function POST(request: Request) {
     try {
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
             .insert([{ email: normalizedEmail }]);
 
         if (dbError) {
-            console.error('Supabase newsletter insert error:', dbError);
+            reportError(dbError, { scope: 'newsletter.db.insert' });
             if (dbError.code === '23505') { // Unique violation
                 return NextResponse.json({ error: 'Email already subscribed' }, { status: 400 });
             }
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ success: true, message: 'Subscribed successfully' }, { status: 200 });
     } catch (error) {
-        console.error('Newsletter subscription error:', error);
+        reportError(error, { scope: 'newsletter.subscribe' });
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

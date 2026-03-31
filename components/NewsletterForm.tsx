@@ -5,23 +5,27 @@ import { useState } from 'react';
 export default function NewsletterForm() {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [message, setMessage] = useState('');
 
     const handleSubscribe = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email) return;
 
         setStatus('loading');
+        setMessage('');
         try {
             const response = await fetch('/api/newsletter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),
             });
-            if (!response.ok) throw new Error('Failed to subscribe');
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.error || 'Failed to subscribe');
             setStatus('success');
             setEmail('');
-        } catch {
+        } catch (error) {
             setStatus('error');
+            setMessage(error instanceof Error ? error.message : 'Failed to subscribe. Try again.');
         }
     };
 
@@ -45,7 +49,7 @@ export default function NewsletterForm() {
                     className="w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:bg-white/20 transition-all"
                 />
                 {status === 'error' && (
-                    <span className="text-red-400 text-sm pl-4 text-left">Failed to subscribe. Try again.</span>
+                    <span className="text-red-400 text-sm pl-4 text-left">{message || 'Failed to subscribe. Try again.'}</span>
                 )}
             </div>
             <button

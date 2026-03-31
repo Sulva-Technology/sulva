@@ -1,18 +1,18 @@
-import { Metadata } from 'next';
 import NewsletterForm from '@/components/NewsletterForm';
 import { createClient } from '@/lib/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Calendar, User } from 'lucide-react';
+import StructuredData from '@/components/StructuredData';
+import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
+import InsightsFeed from '@/components/InsightsFeed';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'Insights',
-  description: 'Deep dives into technology, strategy, and design. Thought leadership for ambitious brands.',
-  openGraph: {
-    title: 'Tech & Strategy Insights | Sulva Tech Blog',
-    description: 'Expert perspectives on software engineering, digital strategy, and the future of technology.',
-  },
-};
+  description: 'Deep dives into technology, product strategy, design systems, and search-ready digital execution.',
+  path: '/insights',
+  keywords: ['technology insights', 'product strategy articles', 'software delivery blog'],
+});
 
 type Insight = {
   slug: string;
@@ -24,6 +24,9 @@ type Insight = {
   website_url: string | null;
   published_at: string;
   featured: boolean;
+  seo_title?: string | null;
+  seo_description?: string | null;
+  og_image_url?: string | null;
 };
 
 function formatPublishDate(value: string) {
@@ -40,8 +43,8 @@ export default async function InsightsPage() {
   const supabase = await createClient();
   const { data: insights, error } = await supabase
     .from('insights')
-    .select('slug, title, category, excerpt, author, image_url, website_url, published_at, featured')
-    .eq('is_published', true)
+    .select('slug, title, category, excerpt, author, image_url, og_image_url, website_url, published_at, featured, seo_title, seo_description')
+    .eq('status', 'published')
     .order('featured', { ascending: false })
     .order('published_at', { ascending: false });
 
@@ -52,9 +55,14 @@ export default async function InsightsPage() {
   const articles: Insight[] = insights || [];
   const featuredArticle = articles.find((article) => article.featured) || articles[0];
   const otherArticles = articles.filter((article) => article.slug !== featuredArticle?.slug);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Insights', path: '/insights' },
+  ]);
 
   return (
     <div className="w-full px-4 py-12 sm:px-6 lg:px-8">
+      <StructuredData data={breadcrumbJsonLd} />
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <span className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
@@ -76,7 +84,7 @@ export default async function InsightsPage() {
             <div className="relative grid gap-0 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg md:grid-cols-2">
               <div className="relative h-64 overflow-hidden bg-background-light md:h-auto">
                 <Image
-                  src={featuredArticle.image_url || 'https://picsum.photos/id/20/1200/800'}
+                  src={featuredArticle.image_url || '/og-image.jpg'}
                   alt={featuredArticle.title}
                   fill
                   className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
@@ -125,80 +133,12 @@ export default async function InsightsPage() {
           </div>
         )}
 
-        <div className="mb-12 flex flex-wrap justify-center gap-2">
-          {['All', ...new Set(articles.map((article) => article.category))].map((cat) => (
-            <span
-              key={cat}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-                cat === 'All'
-                  ? 'bg-text-main text-white'
-                  : 'border border-gray-200 bg-white text-text-muted'
-              }`}
-            >
-              {cat}
-            </span>
-          ))}
-        </div>
-
         {articles.length === 0 ? (
           <div className="mb-20 rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center text-text-muted">
             No published insights yet. Run the database seed to populate the blog.
           </div>
         ) : (
-        <div className="mb-20 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {otherArticles.map((article, index) => (
-            <div
-              key={index}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div className="relative h-48 overflow-hidden bg-background-light">
-                <Image
-                  src={article.image_url || 'https://picsum.photos/id/21/1200/800'}
-                  alt={article.title}
-                  fill
-                  className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute left-4 top-4 z-10">
-                  <span className="rounded-md bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary shadow-sm backdrop-blur-sm">
-                    {article.category}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-grow flex-col p-6">
-                <div className="mb-3 flex items-center gap-3 text-xs text-text-muted">
-                  <span className="flex items-center gap-1">
-                    <Calendar size={12} /> {formatPublishDate(article.published_at)}
-                  </span>
-                  <span className="h-1 w-1 rounded-full bg-gray-300"></span>
-                  <span>{article.author}</span>
-                </div>
-                <h3 className="mb-3 font-heading text-xl font-bold leading-snug text-text-main transition-colors group-hover:text-primary">
-                  {article.title}
-                </h3>
-                <p className="mb-6 line-clamp-3 text-sm leading-relaxed text-text-muted">
-                  {article.excerpt}
-                </p>
-                <div className="mt-auto flex items-center justify-between border-t border-gray-50 pt-4 gap-4">
-                  {article.website_url ? (
-                    <a
-                      href={article.website_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm font-bold text-text-main transition-colors hover:text-primary"
-                    >
-                      Visit Website
-                    </a>
-                  ) : (
-                    <span className="text-sm font-medium text-gray-400">Project Link Coming Soon</span>
-                  )}
-                  <Link href={`/insights/${article.slug}`} className="inline-flex items-center text-sm font-bold text-primary transition-all group-hover:gap-2">
-                    Read More <ArrowRight size={16} className="ml-1" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+          <InsightsFeed articles={otherArticles} />
         )}
 
         <div id="newsletter" className="relative overflow-hidden rounded-3xl bg-surface-dark p-8 text-center md:p-16">

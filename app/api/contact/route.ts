@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { enforceRateLimit, getRequestClientKey } from '@/lib/rate-limit';
 import { Resend } from 'resend';
+import { reportError } from '@/lib/monitoring';
 
 function escapeHtml(value: string) {
     return value
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
             }]);
 
         if (dbError) {
-            console.error('Supabase contact insert error:', dbError);
+            reportError(dbError, { scope: 'contact.db.insert' });
             return NextResponse.json(
                 { error: 'Database error' },
                 { status: 500 }
@@ -118,7 +119,7 @@ export async function POST(request: Request) {
                 `,
             });
             if (emailError) {
-                console.error('Resend email error:', emailError);
+                reportError(emailError, { scope: 'contact.email.send' });
             }
         } else if (resendApiKey) {
             console.warn('Resend is configured, but CONTACT_EMAIL or CONTACT_FROM_EMAIL is missing. Skipping contact notification email.');
@@ -126,7 +127,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ success: true, message: 'Message received' }, { status: 200 });
     } catch (error) {
-        console.error('Contact form error:', error);
+        reportError(error, { scope: 'contact.submit' });
         return NextResponse.json(
             { error: 'Internal server error while processing request' },
             { status: 500 }

@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'Privacy Policy',
-  description: 'How Sulva Tech collects, uses, and protects personal information.',
-};
+  description: 'How Sulva Tech collects, uses, stores, and protects personal information submitted through this website.',
+  path: '/privacy-policy',
+});
 
 export default function PrivacyPolicyPage() {
   return (
@@ -29,7 +30,9 @@ export default function PrivacyPolicyPage() {
           obligations.
         </p>
         <p>
-          This policy should be reviewed and adapted with legal counsel before production launch.
+          We retain submitted information only for as long as necessary to manage enquiries, requested updates,
+          legal obligations, or legitimate operational needs. When information is no longer needed, it is deleted
+          or anonymized in line with our retention practices.
         </p>
       </article>
     </div>

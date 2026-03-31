@@ -1,5 +1,5 @@
 import { requireAdminUser } from '@/lib/supabase/admin';
-import { Users, Mail } from 'lucide-react';
+import { Users, Mail, FileText, TrendingUp } from 'lucide-react';
 
 export default async function AdminDashboard() {
     const { supabase } = await requireAdminUser();
@@ -12,17 +12,27 @@ export default async function AdminDashboard() {
     const { count: subscribersCount } = await supabase
         .from('subscribers')
         .select('*', { count: 'exact', head: true });
+    const { count: publishedInsights } = await supabase
+        .from('insights')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'published');
+    const { count: activeLeads } = await supabase
+        .from('contacts')
+        .select('*', { count: 'exact', head: true })
+        .in('status', ['new', 'in_review', 'qualified']);
 
     const stats = [
         { name: 'Total Contacts', value: contactsCount || 0, icon: Users },
         { name: 'Total Subscribers', value: subscribersCount || 0, icon: Mail },
+        { name: 'Published Insights', value: publishedInsights || 0, icon: FileText },
+        { name: 'Active Leads', value: activeLeads || 0, icon: TrendingUp },
     ];
 
     return (
         <div className="p-8 w-full max-w-7xl mx-auto">
             <h1 className="text-2xl font-bold mb-8">Dashboard Overview</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                 {stats.map((stat) => {
                     const Icon = stat.icon;
                     return (

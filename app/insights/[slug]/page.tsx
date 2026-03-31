@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
+import StructuredData from '@/components/StructuredData';
+import { absoluteUrl, buildBreadcrumbJsonLd } from '@/lib/site';
 
 type InsightPageProps = {
   params: Promise<{ slug: string }>;
@@ -21,9 +23,9 @@ async function getInsight(slug: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('insights')
-    .select('slug, title, category, excerpt, content, author, image_url, website_url, published_at')
+    .select('slug, title, category, excerpt, content, author, author_role, image_url, og_image_url, website_url, seo_title, seo_description, canonical_url, published_at')
     .eq('slug', slug)
-    .eq('is_published', true)
+    .eq('status', 'published')
     .maybeSingle();
 
   if (error) {
@@ -45,12 +47,23 @@ export async function generateMetadata({ params }: InsightPageProps): Promise<Me
   }
 
   return {
-    title: insight.title,
-    description: insight.excerpt,
+    title: insight.seo_title || insight.title,
+    description: insight.seo_description || insight.excerpt,
+    alternates: {
+      canonical: insight.canonical_url || absoluteUrl(`/insights/${slug}`),
+    },
     openGraph: {
-      title: insight.title,
-      description: insight.excerpt,
-      images: insight.image_url ? [insight.image_url] : undefined,
+      title: insight.seo_title || insight.title,
+      description: insight.seo_description || insight.excerpt,
+      type: 'article',
+      url: insight.canonical_url || absoluteUrl(`/insights/${slug}`),
+      images: [insight.og_image_url || insight.image_url || absoluteUrl('/og-image.jpg')],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: insight.seo_title || insight.title,
+      description: insight.seo_description || insight.excerpt,
+      images: [insight.og_image_url || insight.image_url || absoluteUrl('/og-image.jpg')],
     },
   };
 }
@@ -64,9 +77,39 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
   }
 
   const paragraphs: string[] = insight.content.split('\n\n').filter(Boolean);
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: 'Home', path: '/' },
+    { name: 'Insights', path: '/insights' },
+    { name: insight.title, path: `/insights/${insight.slug}` },
+  ]);
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: insight.seo_title || insight.title,
+    description: insight.seo_description || insight.excerpt,
+    image: [insight.og_image_url || insight.image_url || absoluteUrl('/og-image.jpg')],
+    author: {
+      '@type': 'Person',
+      name: insight.author,
+      jobTitle: insight.author_role || undefined,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Sulva Tech',
+      logo: {
+        '@type': 'ImageObject',
+        url: absoluteUrl('/logo.jpg'),
+      },
+    },
+    mainEntityOfPage: insight.canonical_url || absoluteUrl(`/insights/${insight.slug}`),
+    datePublished: insight.published_at,
+    dateModified: insight.published_at,
+  };
 
   return (
     <div className="w-full px-4 py-12 sm:px-6 lg:px-8">
+      <StructuredData data={breadcrumbJsonLd} />
+      <StructuredData data={articleJsonLd} />
       <article className="mx-auto max-w-4xl">
         <Link href="/insights" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-primary transition-colors hover:text-primary-dark">
           <ArrowLeft size={16} />
@@ -106,7 +149,7 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
 
         <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-3xl bg-background-light">
           <Image
-            src={insight.image_url || 'https://picsum.photos/id/24/1200/800'}
+            src={insight.image_url || '/og-image.jpg'}
             alt={insight.title}
             fill
             className="object-cover object-center"

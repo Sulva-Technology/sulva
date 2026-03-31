@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Mail, MapPin, Phone, ArrowRight, CheckCircle } from 'lucide-react';
+import { siteConfig } from '@/lib/site';
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -16,10 +17,12 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -29,14 +32,23 @@ export default function ContactPage() {
         body: JSON.stringify(formState),
       });
 
+      const payload = await response.json();
       if (!response.ok) {
-        throw new Error('Failed to submit');
+        throw new Error(payload.error || 'Failed to submit');
       }
 
       setIsSubmitted(true);
+      setFormState({
+        name: '',
+        email: '',
+        company: '',
+        projectType: '',
+        budget: '',
+        message: '',
+        website: '',
+      });
     } catch (error) {
-      console.error(error);
-      alert('Failed to send message. Please try again later.');
+      setError(error instanceof Error ? error.message : 'Failed to send message. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +88,7 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-bold text-lg mb-1">Project Enquiries</h3>
                   <p className="text-gray-400">Use the form to share your goals, scope, and timeline.</p>
-                  <p className="text-gray-400">We&apos;ll reply from the contact address configured for this deployment.</p>
+                  <p className="text-gray-400">We usually reply from <span className="text-white">{siteConfig.email}</span>.</p>
                 </div>
               </div>
 
@@ -270,6 +282,9 @@ export default function ContactPage() {
                     </>
                   )}
                 </button>
+                {error ? (
+                  <p className="text-sm font-medium text-red-600">{error}</p>
+                ) : null}
               </form>
             )}
           </div>

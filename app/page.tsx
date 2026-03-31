@@ -1,197 +1,230 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { ArrowRight, ArrowUpRight, Code, Database, Lightbulb, PenTool } from 'lucide-react';
-import { Metadata } from 'next';
+import StructuredData from '@/components/StructuredData';
+import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
 
-export const metadata: Metadata = {
-  title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
-  description: 'Sulva Tech helps teams design, build, and ship digital products with senior-led strategy, engineering, and product execution.',
-};
+export const metadata = buildMetadata({
+  title: 'Built to Solve, Designed to Last',
+  description:
+    'Sulva Tech helps teams design, build, and grow digital products with senior-led strategy, engineering, and product execution.',
+  path: '/',
+  keywords: ['digital product studio', 'technical partner', 'software agency Lagos'],
+});
+
+const featuredWork = [
+  {
+    name: 'Growth Websites',
+    type: 'Web Platforms',
+    desc: 'Conversion-focused marketing sites and launch surfaces built to move from attention to action.',
+    href: '/work',
+  },
+  {
+    name: 'Operational Systems',
+    type: 'Internal Tools',
+    desc: 'Custom systems that reduce manual work, tighten reporting, and support scaling teams.',
+    href: '/services',
+  },
+  {
+    name: 'Content Engines',
+    type: 'SEO + Insights',
+    desc: 'Publishing systems and editorial structures that turn expertise into organic growth.',
+    href: '/insights',
+  },
+  {
+    name: 'Design Systems',
+    type: 'Product UX',
+    desc: 'Reusable interface foundations that help fast-moving teams ship with consistency.',
+    href: '/about',
+  },
+];
+
+const serviceCards = [
+  {
+    icon: Code,
+    title: 'Product Engineering',
+    desc: 'We ship websites, customer products, and internal tools that hold up after launch.',
+  },
+  {
+    icon: Database,
+    title: 'Platform & Systems',
+    desc: 'We structure data, integrations, and backend workflows so growth does not create chaos.',
+  },
+  {
+    icon: Lightbulb,
+    title: 'Product Direction',
+    desc: 'We sharpen messaging, scope, and roadmap decisions before delivery gets expensive.',
+  },
+  {
+    icon: PenTool,
+    title: 'UX & Design Systems',
+    desc: 'We create interfaces that feel premium while staying practical for real product teams.',
+  },
+];
 
 export default function Home() {
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([{ name: 'Home', path: '/' }]);
+
   return (
     <div className="w-full">
-      {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center min-h-[80vh] text-center px-4 overflow-hidden">
-        {/* Background decorative blob */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+      <StructuredData data={breadcrumbJsonLd} />
 
-        <div className="flex flex-col gap-6 max-w-5xl mx-auto z-10">
-          <h1 className="text-text-main text-5xl md:text-7xl lg:text-8xl font-heading font-black leading-[1.1] tracking-tighter uppercase">
-            Built to Solve <br />
-            <span className="text-primary italic">Designed to Last</span>
-          </h1>
-          <p className="text-text-muted text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Sulva Tech partners with ambitious teams to shape product strategy, ship reliable software, and create digital experiences that keep compounding after launch.
-          </p>
-        </div>
+      <section className="relative overflow-hidden px-4 pb-24 pt-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(105,13,171,0.16),_transparent_45%),linear-gradient(180deg,rgba(247,246,248,0.2),rgba(247,246,248,1))]" />
+        <div className="absolute right-[-10%] top-16 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute left-[-8%] top-40 h-64 w-64 rounded-full bg-background-dark/10 blur-3xl" />
 
-        <div className="flex flex-col sm:flex-row gap-4 mt-10 z-10">
-          <Link
-            href="/contact"
-            className="bg-primary hover:bg-primary-dark text-white rounded-full h-14 px-8 text-base font-bold transition-all hover:shadow-lg hover:-translate-y-1 flex items-center justify-center gap-2"
-          >
-            Start a Project
-            <ArrowRight size={18} />
-          </Link>
-          <Link
-            href="/work"
-            className="bg-transparent border-2 border-gray-200 text-text-main hover:border-primary hover:text-primary rounded-full h-14 px-8 text-base font-bold transition-all hover:bg-primary/5 flex items-center justify-center"
-          >
-            View Case Studies
-          </Link>
+        <div className="relative mx-auto max-w-7xl">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="max-w-4xl">
+              <span className="inline-flex rounded-full border border-primary/15 bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-primary shadow-sm">
+                Senior-led digital execution
+              </span>
+              <h1 className="mt-6 text-5xl font-black uppercase leading-[0.95] tracking-tight text-text-main md:text-7xl">
+                Built to solve.
+                <br />
+                <span className="text-primary italic normal-case">Designed to last.</span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-text-muted md:text-xl">
+                Sulva Tech partners with ambitious teams to turn strategy, delivery, and content into one coherent growth system.
+              </p>
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <Link
+                  href="/contact"
+                  className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-black px-8 text-base font-bold text-white transition hover:-translate-y-0.5 hover:bg-gray-800"
+                >
+                  Start a Project
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  href="/services"
+                  className="inline-flex h-14 items-center justify-center rounded-full border border-gray-200 bg-white px-8 text-base font-bold text-text-main transition hover:border-primary hover:text-primary"
+                >
+                  Explore Services
+                </Link>
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur">
+              <div className="rounded-[1.5rem] bg-gradient-to-br from-background-dark via-surface-dark to-primary p-8 text-white">
+                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+                  <span>Premium delivery</span>
+                  <span>SEO-ready structure</span>
+                </div>
+                <div className="mt-10 grid gap-4 md:grid-cols-2">
+                  {[
+                    'Clear roadmap alignment',
+                    'Faster launch cycles',
+                    'Search-friendly content systems',
+                    'Reliable post-launch operations',
+                  ].map((item) => (
+                    <div key={item} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-7 text-white/85">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 rounded-2xl border border-primary/20 bg-white/10 p-5 text-sm leading-7 text-white/80">
+                  We work best with founders, operators, and product teams who need a partner that can think clearly and execute without hand-holding.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Recent Build Section */}
-      <section className="max-w-7xl mx-auto px-6 mb-28">
+      <section className="mx-auto mb-28 max-w-7xl px-6">
         <div className="flex flex-col gap-8 border-y border-gray-100 py-12">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              <span className="text-primary text-sm font-bold tracking-widest uppercase mb-3 block">
-                Recent Builds
-              </span>
-              <h2 className="text-text-main text-3xl md:text-4xl font-heading font-black tracking-tight mb-3">
-                Real projects, shipped recently.
+              <span className="text-primary text-sm font-bold tracking-widest uppercase">What premium looks like</span>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-text-main md:text-4xl">
+                Digital work that earns trust quickly.
               </h2>
-              <p className="text-text-muted text-lg leading-relaxed">
-                A snapshot of the kinds of websites and digital products we&apos;ve recently delivered across real estate, ecommerce, personal branding, and education.
+              <p className="mt-3 text-lg leading-8 text-text-muted">
+                We combine messaging, product thinking, and engineering discipline so every touchpoint feels intentional.
               </p>
             </div>
-            <Link
-              href="/work"
-              className="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all whitespace-nowrap group"
-            >
-              See Full Work
-              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <Link href="/work" className="inline-flex items-center gap-2 font-bold text-primary transition hover:gap-3">
+              See our approach
+              <ArrowRight size={18} />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { name: 'Mindfire Homes', type: 'Real Estate', href: 'https://mindfirehomes.com' },
-              { name: 'Bata Store', type: 'Ecommerce', href: 'https://bata.sulvatech.com' },
-              { name: 'Iyiola Portfolio', type: 'Personal Brand', href: 'https://iyiola.sulvatech.com' },
-              { name: 'VUI Studify', type: 'EdTech', href: 'https://student.sulvatech.com' },
-            ].map((project) => (
-              <a
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {featuredWork.map((project) => (
+              <Link
                 key={project.name}
                 href={project.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-2xl border border-gray-200 bg-white px-5 py-6 transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg"
+                className="group rounded-3xl border border-gray-200 bg-white p-6 transition hover:-translate-y-1 hover:border-primary hover:shadow-lg"
               >
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-text-muted">
-                  {project.type}
+                <span className="text-xs font-bold uppercase tracking-[0.25em] text-text-muted">{project.type}</span>
+                <h3 className="mt-4 text-2xl font-bold text-text-main transition-colors group-hover:text-primary">{project.name}</h3>
+                <p className="mt-4 text-sm leading-7 text-text-muted">{project.desc}</p>
+                <span className="mt-8 inline-flex items-center text-sm font-bold text-primary">
+                  Learn more <ArrowUpRight size={16} className="ml-2" />
                 </span>
-                <h3 className="mt-3 text-xl font-heading font-bold text-text-main group-hover:text-primary transition-colors">
-                  {project.name}
-                </h3>
-                <span className="mt-6 inline-flex items-center text-sm font-bold text-primary">
-                  Visit Site
-                  <ArrowUpRight size={16} className="ml-2" />
-                </span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="max-w-7xl mx-auto px-6 mb-24">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+      <section className="mx-auto mb-24 max-w-7xl px-6">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-xl">
-            <h2 className="text-text-main text-4xl md:text-5xl font-heading font-bold leading-tight mb-4 tracking-tight">
-              Our Expertise
-            </h2>
-            <p className="text-text-muted text-lg">
-              Strategy, product design, and software delivery aligned around one goal: helping teams move from idea to launch without losing clarity or quality.
+            <h2 className="text-4xl font-bold leading-tight tracking-tight text-text-main md:text-5xl">How we help teams move</h2>
+            <p className="mt-4 text-lg leading-8 text-text-muted">
+              From positioning and websites to product systems and editorial infrastructure, we design for momentum.
             </p>
           </div>
-          <Link
-            href="/services"
-            className="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all whitespace-nowrap group"
-          >
-            View All Services
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          <Link href="/insights" className="inline-flex items-center gap-2 font-bold text-primary transition hover:gap-3">
+            Explore insights
+            <ArrowRight size={18} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[
-            {
-              icon: Code,
-              title: 'Product Engineering',
-              desc: 'Web platforms, internal tools, and customer-facing products built with modern stacks and strong delivery discipline.',
-            },
-            {
-              icon: Database,
-              title: 'Platform & Systems',
-              desc: 'Operational software, integrations, and backend architecture designed to support growth without creating team drag.',
-            },
-            {
-              icon: Lightbulb,
-              title: 'Product & Brand Direction',
-              desc: 'Clear messaging, product positioning, and digital direction that help teams sound as sharp as the work they ship.',
-            },
-            {
-              icon: PenTool,
-              title: 'Design Systems & UX',
-              desc: 'Interfaces, flows, and design systems that reduce friction, improve clarity, and hold up across real product use.',
-            },
-          ].map((service, index) => (
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          {serviceCards.map((service) => (
             <div
-              key={index}
-              className="group bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between min-h-[320px] relative overflow-hidden"
+              key={service.title}
+              className="group relative overflow-hidden rounded-[2rem] border border-gray-100 bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
-                <service.icon size={32} />
-              </div>
-              <div>
-                <h3 className="text-2xl font-heading font-bold text-text-main mb-3 group-hover:text-primary transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-text-muted leading-relaxed">{service.desc}</p>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <span className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-text-main group-hover:border-primary group-hover:text-primary transition-colors">
-                  <ArrowUpRight size={20} />
-                </span>
+              <div className="absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-primary/5 transition-transform group-hover:scale-110" />
+              <div className="relative z-10">
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <service.icon size={30} />
+                </div>
+                <h3 className="text-2xl font-bold text-text-main">{service.title}</h3>
+                <p className="mt-4 text-base leading-8 text-text-muted">{service.desc}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="max-w-7xl mx-auto px-6 mb-20">
-        <div className="rounded-3xl bg-black overflow-hidden relative py-20 px-8 text-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/40 to-black z-0"></div>
-          {/* Abstract background image overlay */}
-          <div className="absolute inset-0 opacity-20 mix-blend-overlay">
-            <Image
-              src="https://picsum.photos/id/1/1920/1080"
-              alt="Creative technology workspace"
-              fill
-              className="object-cover object-center"
-              priority={false}
-            />
-          </div>
-
-          <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center gap-8">
-            <h2 className="text-white text-4xl md:text-6xl font-heading font-black tracking-tight leading-tight">
-              Ready to move from ideas to execution?
+      <section className="mx-auto mb-20 max-w-7xl px-6">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-surface-dark px-8 py-20 text-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(105,13,171,0.55),_transparent_35%),linear-gradient(135deg,rgba(26,16,34,1),rgba(45,27,54,1))]" />
+          <div className="relative z-10 mx-auto max-w-3xl">
+            <h2 className="text-4xl font-black tracking-tight text-white md:text-6xl">
+              Ready to turn expertise into growth?
             </h2>
-            <p className="text-gray-300 text-lg md:text-xl max-w-xl">
-              Bring the brief, the messy context, or the half-finished roadmap. We&apos;ll help turn it into something clear, usable, and launchable.
+            <p className="mt-6 text-lg leading-8 text-gray-300">
+              Bring the messy brief, the product bottleneck, or the underperforming website. We’ll turn it into something sharper, faster, and more durable.
             </p>
-            <Link
-              href="/contact"
-              className="bg-white text-primary hover:bg-gray-100 rounded-full h-14 px-10 text-lg font-bold transition-transform hover:scale-105 shadow-lg flex items-center justify-center"
-            >
-              Start the Conversation
-            </Link>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
+              <Link
+                href="/contact"
+                className="inline-flex h-14 items-center justify-center rounded-full bg-white px-10 text-lg font-bold text-primary transition hover:bg-gray-100"
+              >
+                Start the Conversation
+              </Link>
+              <Link
+                href="/insights"
+                className="inline-flex h-14 items-center justify-center rounded-full border border-white/20 px-10 text-lg font-bold text-white transition hover:bg-white/10"
+              >
+                Read our thinking
+              </Link>
+            </div>
           </div>
         </div>
       </section>

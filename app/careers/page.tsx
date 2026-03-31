@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
+import { buildMetadata } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'Careers',
-  description: 'We are growing carefully. Tell us what you build best and we will reach out when a matching role opens.',
-};
+  description: 'We are growing carefully. Share your strengths and we will reach out when the right role opens at Sulva Tech.',
+  path: '/careers',
+});
 
 export default function CareersPage() {
   return (

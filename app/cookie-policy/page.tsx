@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata = buildMetadata({
   title: 'Cookie Policy',
-  description: 'Information about how Sulva Tech may use cookies and similar technologies.',
-};
+  description: 'Information about how Sulva Tech uses cookies and similar technologies across this website.',
+  path: '/cookie-policy',
+});
 
 export default function CookiePolicyPage() {
   return (
@@ -24,7 +25,8 @@ export default function CookiePolicyPage() {
           the categories of cookies in use and the controls available to visitors.
         </p>
         <p>
-          This policy should be reviewed and completed with legal counsel before production launch.
+          Visitors can manage optional cookies through their browser settings or any consent controls made available
+          on the site when non-essential tracking is enabled.
         </p>
       </article>
     </div>

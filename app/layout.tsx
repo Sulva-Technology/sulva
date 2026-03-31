@@ -3,6 +3,9 @@ import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import StructuredData from '@/components/StructuredData';
+import AnalyticsScripts from '@/components/AnalyticsScripts';
+import { absoluteUrl, siteConfig } from '@/lib/site';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,41 +20,38 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sulvatech.com'),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
-    template: '%s | Sulva Tech',
+    default: `${siteConfig.name} | ${siteConfig.tagline}`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
-  keywords: ['Software Development', 'Digital Transformation', 'UI/UX Design', 'Brand Strategy', 'Enterprise Software', 'Sulva Tech', 'Tech Agency'],
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
   icons: {
     icon: '/logo.jpg',
     apple: '/logo.jpg',
   },
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
-    title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
-    description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
-    url: 'https://sulvatech.com',
-    siteName: 'Sulva Tech',
+    title: `${siteConfig.name} | ${siteConfig.tagline}`,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     images: [
       {
-        url: '/og-image.jpg',
+        url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: 'Sulva Tech - BUILT TO SOLVE, DESIGNED TO LAST',
-      }
+        alt: `${siteConfig.name} - ${siteConfig.tagline}`,
+      },
     ],
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Sulva Tech | BUILT TO SOLVE, DESIGNED TO LAST',
-    description: 'Transforming businesses through premium software development, strategic digital innovation, and future-ready technology solutions.',
-    images: ['/og-image.jpg'],
+    title: `${siteConfig.name} | ${siteConfig.tagline}`,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
   },
   robots: {
     index: true,
@@ -64,19 +64,19 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
-const jsonLd = {
+const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Sulva Tech',
-  url: 'https://sulvatech.com',
-  logo: 'https://sulvatech.com/logo.jpg',
-  sameAs: [
-    'https://twitter.com/sulvatech',
-    'https://linkedin.com/company/sulvatech',
-  ],
-  description: 'BUILT TO SOLVE, DESIGNED TO LAST - Premium software development and digital transformation.',
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: absoluteUrl('/logo.jpg'),
+  description: siteConfig.description,
+  email: siteConfig.email,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lagos',
@@ -87,19 +87,36 @@ const jsonLd = {
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Sulva Tech',
-  url: 'https://sulvatech.com',
+  name: siteConfig.name,
+  url: siteConfig.url,
+};
+
+const serviceJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: siteConfig.name,
+  url: siteConfig.url,
+  image: absoluteUrl(siteConfig.ogImage),
+  description: siteConfig.description,
+  areaServed: 'Worldwide',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Lagos',
+    addressCountry: 'Nigeria',
+  },
+  email: siteConfig.email,
+  knowsAbout: siteConfig.services,
 };
 
 const navigationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   itemListElement: [
-    { '@type': 'SiteNavigationElement', position: 1, name: 'Services', url: 'https://sulvatech.com/services' },
-    { '@type': 'SiteNavigationElement', position: 2, name: 'Work', url: 'https://sulvatech.com/work' },
-    { '@type': 'SiteNavigationElement', position: 3, name: 'About', url: 'https://sulvatech.com/about' },
-    { '@type': 'SiteNavigationElement', position: 4, name: 'Insights', url: 'https://sulvatech.com/insights' },
-    { '@type': 'SiteNavigationElement', position: 5, name: 'Contact', url: 'https://sulvatech.com/contact' },
+    { '@type': 'SiteNavigationElement', position: 1, name: 'Services', url: absoluteUrl('/services') },
+    { '@type': 'SiteNavigationElement', position: 2, name: 'Work', url: absoluteUrl('/work') },
+    { '@type': 'SiteNavigationElement', position: 3, name: 'About', url: absoluteUrl('/about') },
+    { '@type': 'SiteNavigationElement', position: 4, name: 'Insights', url: absoluteUrl('/insights') },
+    { '@type': 'SiteNavigationElement', position: 5, name: 'Contact', url: absoluteUrl('/contact') },
   ],
 };
 
@@ -111,18 +128,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
-        />
+        <StructuredData data={organizationJsonLd} />
+        <StructuredData data={websiteJsonLd} />
+        <StructuredData data={serviceJsonLd} />
+        <StructuredData data={navigationJsonLd} />
+        <AnalyticsScripts />
       </head>
       <body className="bg-background-light text-text-main font-sans antialiased min-h-screen flex flex-col">
         <Navbar />

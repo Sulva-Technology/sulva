@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Twitter, Linkedin, Instagram } from 'lucide-react';
+import { ArrowUpRight, Mail, MapPin } from 'lucide-react';
 import Logo from '@/components/Logo';
+import { siteConfig } from '@/lib/site';
 
 export default function Footer() {
   return (
@@ -15,36 +16,22 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mb-6 text-sm leading-relaxed text-text-muted">
-              Premium digital solutions for the modern enterprise. We build the future.
+              Senior-led product strategy, software delivery, and design systems for teams that need clarity and momentum.
             </p>
-            <div className="flex gap-4">
-              <a
-                href="https://twitter.com/sulvatech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text-muted transition-colors hover:text-primary"
-                aria-label="Twitter"
-              >
-                <Twitter size={20} />
-              </a>
-              <a
-                href="https://linkedin.com/company/sulvatech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text-muted transition-colors hover:text-primary"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
-              <a
-                href="https://instagram.com/sulvatech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-text-muted transition-colors hover:text-primary"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
-              </a>
+            <div className="space-y-3 text-sm text-text-muted">
+              <p className="flex items-center gap-2">
+                <Mail size={16} className="text-primary" />
+                <a href={`mailto:${siteConfig.email}`} className="transition-colors hover:text-primary">
+                  {siteConfig.email}
+                </a>
+              </p>
+              <p className="flex items-center gap-2">
+                <MapPin size={16} className="text-primary" />
+                <span>{siteConfig.location}</span>
+              </p>
+              <Link href="/contact" className="inline-flex items-center gap-2 font-semibold text-text-main transition-colors hover:text-primary">
+                Start a project <ArrowUpRight size={14} />
+              </Link>
             </div>
           </div>
 
@@ -126,7 +113,7 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} Sulva Tech Inc. All rights reserved.</p>
           <div className="mt-4 flex items-center gap-2 md:mt-0">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>All systems operational</span>
+            <span>Ready for new engagements</span>
           </div>
         </div>
       </div>
