@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import StructuredData from '@/components/StructuredData';
 import { absoluteUrl, buildBreadcrumbJsonLd } from '@/lib/site';
+import { fetchPublishedInsightBySlug } from '@/lib/insights';
 
 type InsightPageProps = {
   params: Promise<{ slug: string }>;
@@ -21,12 +22,7 @@ function formatPublishDate(value: string) {
 
 async function getInsight(slug: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from('insights')
-    .select('slug, title, category, excerpt, content, author, author_role, image_url, og_image_url, website_url, seo_title, seo_description, canonical_url, published_at')
-    .eq('slug', slug)
-    .eq('status', 'published')
-    .maybeSingle();
+  const { data, error } = await fetchPublishedInsightBySlug(supabase, slug);
 
   if (error) {
     console.error('Failed to fetch insight:', error);

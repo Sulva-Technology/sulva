@@ -1,15 +1,12 @@
 import { MetadataRoute } from 'next';
 import { createClient } from '@/lib/supabase/server';
+import { fetchPublishedInsightSitemapEntries } from '@/lib/insights';
 import { siteConfig } from '@/lib/site';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = siteConfig.url;
     const supabase = await createClient();
-    const { data: insights } = await supabase
-        .from('insights')
-        .select('slug, updated_at, published_at')
-        .eq('status', 'published')
-        .order('published_at', { ascending: false });
+    const { data: insights } = await fetchPublishedInsightSitemapEntries(supabase);
 
     const staticRoutes: MetadataRoute.Sitemap = [
         {

@@ -6,6 +6,7 @@ import { ArrowRight, Calendar, User } from 'lucide-react';
 import StructuredData from '@/components/StructuredData';
 import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
 import InsightsFeed from '@/components/InsightsFeed';
+import { fetchPublishedInsights } from '@/lib/insights';
 
 export const metadata = buildMetadata({
   title: 'Insights',
@@ -41,12 +42,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function InsightsPage() {
   const supabase = await createClient();
-  const { data: insights, error } = await supabase
-    .from('insights')
-    .select('slug, title, category, excerpt, author, image_url, og_image_url, website_url, published_at, featured, seo_title, seo_description')
-    .eq('status', 'published')
-    .order('featured', { ascending: false })
-    .order('published_at', { ascending: false });
+  const { data: insights, error } = await fetchPublishedInsights(supabase);
 
   if (error) {
     console.error('Failed to fetch insights:', error);
@@ -135,7 +131,7 @@ export default async function InsightsPage() {
 
         {articles.length === 0 ? (
           <div className="mb-20 rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center text-text-muted">
-            No published insights yet. Run the database seed to populate the blog.
+            No published insights yet.
           </div>
         ) : (
           <InsightsFeed articles={otherArticles} />
