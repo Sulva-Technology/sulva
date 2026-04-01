@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import StructuredData from '@/components/StructuredData';
+import RemoteSafeImage from '@/components/RemoteSafeImage';
 import { absoluteUrl, buildBreadcrumbJsonLd } from '@/lib/site';
 import { fetchPublishedInsightBySlug } from '@/lib/insights';
 
@@ -144,10 +144,9 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
         </p>
 
         <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-3xl bg-background-light">
-          <Image
+          <RemoteSafeImage
             src={insight.image_url || '/og-image.jpg'}
             alt={insight.title}
-            fill
             className="object-cover object-center"
             priority
           />

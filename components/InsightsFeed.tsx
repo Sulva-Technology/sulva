@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Calendar } from 'lucide-react';
+import RemoteSafeImage from '@/components/RemoteSafeImage';
 
 type Insight = {
   slug: string;
@@ -64,10 +64,9 @@ export default function InsightsFeed({ articles }: { articles: Insight[] }) {
               className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
               <div className="relative h-48 overflow-hidden bg-background-light">
-                <Image
+                <RemoteSafeImage
                   src={article.image_url || '/og-image.jpg'}
                   alt={article.title}
-                  fill
                   className="object-cover object-center transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute left-4 top-4 z-10">
@@ -115,4 +114,3 @@ export default function InsightsFeed({ articles }: { articles: Insight[] }) {
     </>
   );
 }
-

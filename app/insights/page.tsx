@@ -1,11 +1,11 @@
 import NewsletterForm from '@/components/NewsletterForm';
 import { createClient } from '@/lib/supabase/server';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Calendar, User } from 'lucide-react';
 import StructuredData from '@/components/StructuredData';
 import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
 import InsightsFeed from '@/components/InsightsFeed';
+import RemoteSafeImage from '@/components/RemoteSafeImage';
 import { fetchPublishedInsights } from '@/lib/insights';
 
 export const metadata = buildMetadata({
@@ -79,10 +79,9 @@ export default async function InsightsPage() {
             <div className="absolute inset-0 rotate-1 rounded-3xl bg-primary/5 transition-transform group-hover:rotate-2"></div>
             <div className="relative grid gap-0 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg md:grid-cols-2">
               <div className="relative h-64 overflow-hidden bg-background-light md:h-auto">
-                <Image
+                <RemoteSafeImage
                   src={featuredArticle.image_url || '/og-image.jpg'}
                   alt={featuredArticle.title}
-                  fill
                   className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                   priority
                 />
