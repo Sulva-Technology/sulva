@@ -49,7 +49,9 @@ export default function HeroShowcase({ studies }: { studies: CaseStudy[] }) {
             ) : null}
           </div>
         ))}
-        <div className="absolute inset-0 bg-ink/60" />
+        {/* Client sites are often light; scrim hardest behind the headline so white text keeps 4.5:1. */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/90 via-ink/75 to-ink/45" />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/80 to-transparent" />
       </div>
 
       <div className="mt-auto pt-16">
