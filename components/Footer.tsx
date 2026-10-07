@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import Logo from '@/components/Logo';
 import NewsletterForm from '@/components/NewsletterForm';
 import GradientField from '@/components/ui/GradientField';
 import { siteConfig } from '@/lib/site';
@@ -93,12 +94,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        <p
-          aria-hidden="true"
-          className="pointer-events-none select-none text-center text-[26vw] font-semibold leading-[0.75] tracking-[-0.06em] text-white/[0.06]"
-        >
-          Sulva
-        </p>
+        <Logo className="pointer-events-none mx-auto h-auto w-full select-none text-white/[0.06]" />
         <p className="relative pb-8 pt-4 text-xs text-white/40">
           © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
         </p>

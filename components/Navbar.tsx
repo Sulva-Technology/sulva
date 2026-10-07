@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Logo from '@/components/Logo';
 import { buttonClasses } from '@/components/ui/Button';
 
 export const navLinks = [
@@ -82,8 +83,8 @@ export default function Navbar() {
             : 'border-transparent',
         )}
       >
-        <Link href="/" className="text-lg font-semibold tracking-tight text-white">
-          Sulva<span className="text-copper-soft">.</span>
+        <Link href="/" aria-label="Sulva Tech home" className="text-white">
+          <Logo className="h-10 md:h-11" />
         </Link>
 
         <ul className="hidden items-center gap-1 md:flex">

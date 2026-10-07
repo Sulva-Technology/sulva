@@ -28,10 +28,6 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [...siteConfig.keywords],
-  icons: {
-    icon: '/logo.jpg',
-    apple: '/logo.jpg',
-  },
   openGraph: {
     title: `${siteConfig.name} | ${siteConfig.tagline}`,
     description: siteConfig.description,
