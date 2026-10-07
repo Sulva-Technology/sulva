@@ -1,202 +1,23 @@
--- ==========================================
--- SULVA DATABASE SCHEMA & SEED DATA
--- Run this in your Supabase SQL Editor
--- ==========================================
+-- Insights refresh, October 2026.
+-- Replaces the generic launch posts with posts about Sulva's real work.
+-- Run once in the Supabase SQL editor (Project -> SQL Editor -> New query -> paste -> Run).
+-- Safe to re-run. Retired posts are moved to draft, not deleted: restore one from /admin/insights if needed.
 
--- 0. Create Admin Users Table
-CREATE TABLE IF NOT EXISTS public.admin_users (
-    user_id UUID PRIMARY KEY REFERENCES auth.users (id) ON DELETE CASCADE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
+BEGIN;
 
-ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Admin users can read their own membership" ON public.admin_users;
-CREATE POLICY "Admin users can read their own membership" ON public.admin_users
-    FOR SELECT USING (auth.uid() = user_id);
-
--- 1. Create Contacts Table
-CREATE TABLE IF NOT EXISTS public.contacts (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    company TEXT,
-    "projectType" TEXT,
-    budget TEXT,
-    status TEXT DEFAULT 'new' NOT NULL,
-    notes TEXT,
-    message TEXT NOT NULL
-);
-
-ALTER TABLE public.contacts
-    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'new' NOT NULL,
-    ADD COLUMN IF NOT EXISTS notes TEXT;
-
--- Enable Row Level Security (RLS) for contacts
-ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
-
--- Allow public inserts (so contact form works for anyone)
-DROP POLICY IF EXISTS "Enable insert for public" ON public.contacts;
-CREATE POLICY "Enable insert for public" ON public.contacts
-    FOR INSERT WITH CHECK (true);
-
--- Allow registered admins to view/edit/delete
-DROP POLICY IF EXISTS "Enable full access for authenticated users" ON public.contacts;
-DROP POLICY IF EXISTS "Enable full access for admin users" ON public.contacts;
-CREATE POLICY "Enable full access for admin users" ON public.contacts
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1
-            FROM public.admin_users
-            WHERE admin_users.user_id = auth.uid()
-        )
-    );
-
-
--- 2. Create Subscribers Table
-CREATE TABLE IF NOT EXISTS public.subscribers (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    notes TEXT,
-    email TEXT NOT NULL UNIQUE
-);
-
-ALTER TABLE public.subscribers
-    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    ADD COLUMN IF NOT EXISTS notes TEXT;
-
--- Enable Row Level Security (RLS) for subscribers
-ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
-
--- Allow public inserts
-DROP POLICY IF EXISTS "Enable insert for public" ON public.subscribers;
-CREATE POLICY "Enable insert for public" ON public.subscribers
-    FOR INSERT WITH CHECK (true);
-
--- Allow registered admins to view/edit/delete
-DROP POLICY IF EXISTS "Enable full access for authenticated users" ON public.subscribers;
-DROP POLICY IF EXISTS "Enable full access for admin users" ON public.subscribers;
-CREATE POLICY "Enable full access for admin users" ON public.subscribers
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1
-            FROM public.admin_users
-            WHERE admin_users.user_id = auth.uid()
-        )
-    );
-
-
--- 3. Create Insights Table
-CREATE TABLE IF NOT EXISTS public.insights (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    slug TEXT NOT NULL UNIQUE,
-    title TEXT NOT NULL,
-    category TEXT NOT NULL,
-    excerpt TEXT NOT NULL,
-    content TEXT NOT NULL,
-    author TEXT NOT NULL,
-    author_role TEXT,
-    image_url TEXT,
-    og_image_url TEXT,
-    website_url TEXT,
-    seo_title TEXT,
-    seo_description TEXT,
-    canonical_url TEXT,
-    status TEXT DEFAULT 'draft' NOT NULL,
-    featured BOOLEAN DEFAULT false NOT NULL,
-    is_published BOOLEAN DEFAULT true NOT NULL,
-    published_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-ALTER TABLE public.insights
-    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    ADD COLUMN IF NOT EXISTS author_role TEXT,
-    ADD COLUMN IF NOT EXISTS og_image_url TEXT,
-    ADD COLUMN IF NOT EXISTS website_url TEXT,
-    ADD COLUMN IF NOT EXISTS seo_title TEXT,
-    ADD COLUMN IF NOT EXISTS seo_description TEXT,
-    ADD COLUMN IF NOT EXISTS canonical_url TEXT,
-    ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'draft' NOT NULL;
-
-ALTER TABLE public.insights
-    ALTER COLUMN published_at DROP NOT NULL;
-
+-- 1. Retire the generic and placeholder posts.
 UPDATE public.insights
-SET status = CASE WHEN is_published THEN 'published' ELSE 'draft' END
-WHERE status IS NULL OR status = '';
+SET status = 'draft', is_published = false, featured = false, updated_at = timezone('utc'::text, now())
+WHERE slug IN (
+    'ai-agents-are-redesigning-modern-software-teams',
+    'the-new-stack-for-building-reliable-ai-products',
+    'why-design-systems-matter-more-in-the-age-of-ai',
+    'cyber-resilience-is-now-a-product-strategy',
+    'bata-luxury-ecommerce-store',
+    'iyiola-personal-portfolio-website'
+);
 
-ALTER TABLE public.insights ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS "Enable public read for published insights" ON public.insights;
-CREATE POLICY "Enable public read for published insights" ON public.insights
-    FOR SELECT USING (is_published = true);
-
-DROP POLICY IF EXISTS "Enable full access for authenticated users" ON public.insights;
-DROP POLICY IF EXISTS "Enable full access for admin users" ON public.insights;
-CREATE POLICY "Enable full access for admin users" ON public.insights
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1
-            FROM public.admin_users
-            WHERE admin_users.user_id = auth.uid()
-        )
-    );
-
-CREATE OR REPLACE FUNCTION public.set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = timezone('utc'::text, now());
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS set_contacts_updated_at ON public.contacts;
-CREATE TRIGGER set_contacts_updated_at
-    BEFORE UPDATE ON public.contacts
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-DROP TRIGGER IF EXISTS set_subscribers_updated_at ON public.subscribers;
-CREATE TRIGGER set_subscribers_updated_at
-    BEFORE UPDATE ON public.subscribers
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-DROP TRIGGER IF EXISTS set_insights_updated_at ON public.insights;
-CREATE TRIGGER set_insights_updated_at
-    BEFORE UPDATE ON public.insights
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-
--- ==========================================
--- SEED DATA (Optional: Run this to add demo data to your dashboard)
--- ==========================================
-
--- Seed Contacts
-INSERT INTO public.contacts (name, email, company, "projectType", budget, status, notes, message)
-VALUES
-    ('Alice Smith', 'alice@example.com', 'TechCorp', 'Web Development', '$10k-$25k', 'qualified', 'Interested in a Q2 redesign and CMS migration.', 'We need a new corporate website with a CMS.'),
-    ('Bob Jones', 'bob@startup.io', 'Startup.io', 'Mobile App', '$25k+', 'in_review', 'Waiting on product roadmap documents.', 'Looking to build a cross-platform mobile application.'),
-    ('Charlie Brown', 'charlie@designstudios.com', 'Design Studios', 'UI/UX Design', '$5k-$10k', 'replied', 'Intro email sent with discovery call options.', 'We need help redesigning our administrative dashboard.')
-ON CONFLICT DO NOTHING;
-
--- Seed Subscribers
-INSERT INTO public.subscribers (email)
-VALUES
-    ('alice@example.com'),
-    ('newsletter.fan@gmail.com'),
-    ('bob@startup.io'),
-    ('marketing@techcorp.com')
-ON CONFLICT (email) DO NOTHING;
-
--- Seed Insights
+-- 2. Add the new posts and rewrite the two existing real-work posts (same slugs, so their URLs keep working).
 INSERT INTO public.insights (slug, title, category, excerpt, content, author, author_role, image_url, og_image_url, website_url, seo_title, seo_description, canonical_url, status, featured, is_published, published_at)
 VALUES
     (
@@ -441,4 +262,30 @@ Then keep it alive. A personal site that never changes quietly tells visitors yo
         true,
         '2026-10-04T09:00:00Z'
     )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+    title = EXCLUDED.title,
+    category = EXCLUDED.category,
+    excerpt = EXCLUDED.excerpt,
+    content = EXCLUDED.content,
+    author = EXCLUDED.author,
+    author_role = EXCLUDED.author_role,
+    image_url = EXCLUDED.image_url,
+    og_image_url = EXCLUDED.og_image_url,
+    website_url = EXCLUDED.website_url,
+    seo_title = EXCLUDED.seo_title,
+    seo_description = EXCLUDED.seo_description,
+    canonical_url = EXCLUDED.canonical_url,
+    status = EXCLUDED.status,
+    featured = EXCLUDED.featured,
+    is_published = EXCLUDED.is_published,
+    published_at = EXCLUDED.published_at,
+    updated_at = timezone('utc'::text, now());
+
+-- 3. Exactly one featured post.
+UPDATE public.insights SET featured = (slug = 'why-every-site-comes-with-a-dashboard') WHERE featured OR slug = 'why-every-site-comes-with-a-dashboard';
+
+COMMIT;
+
+-- Check: the published list should now be the posts below, featured first.
+SELECT slug, category, featured, published_at FROM public.insights
+WHERE status = 'published' ORDER BY featured DESC, published_at DESC;

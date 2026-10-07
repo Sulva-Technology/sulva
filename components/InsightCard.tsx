@@ -35,9 +35,9 @@ export default function InsightCard({
     >
       <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-ink-soft">
         <RemoteSafeImage
-          src={article.image_url || '/og-image.jpg'}
+          src={article.image_url || '/insights/cover.jpg'}
           alt={article.title}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover object-left-top transition-transform duration-700 group-hover:scale-[1.03]"
           priority={featured}
         />
       </div>

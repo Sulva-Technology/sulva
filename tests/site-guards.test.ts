@@ -18,6 +18,9 @@ const PUBLIC_FILES = [
   'lib/services.ts',
 ].filter((file) => /\.tsx?$/.test(file) && !/\.test\.tsx?$/.test(file));
 
+// Published copy that lives in the database rather than in components.
+const CONTENT_FILES = ['supabase/insights-refresh-2026-10.sql'];
+
 const BANNED = [
   'senior-led',
   'growth system',
@@ -39,7 +42,7 @@ describe('site guards', () => {
     expect(PUBLIC_FILES).not.toContain('app/admin/page.tsx');
   });
 
-  it.each(PUBLIC_FILES)('%s uses no banned copy', (file) => {
+  it.each([...PUBLIC_FILES, ...CONTENT_FILES])('%s uses no banned copy', (file) => {
     const text = readFileSync(path.join(root, file), 'utf8').toLowerCase();
     for (const phrase of BANNED) expect(text, `"${phrase}" in ${file}`).not.toContain(phrase);
   });

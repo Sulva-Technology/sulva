@@ -133,7 +133,7 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
         <div className="mx-auto max-w-[68ch]">
           <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-card bg-ink-soft">
             <RemoteSafeImage
-              src={insight.image_url || '/og-image.jpg'}
+              src={insight.image_url || '/insights/cover.jpg'}
               alt={insight.title}
               className="h-full w-full object-cover object-center"
               priority

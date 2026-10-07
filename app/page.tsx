@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { unstable_rethrow } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import CtaBand from '@/components/CtaBand';
 import HeroShowcase from '@/components/home/HeroShowcase';
@@ -39,6 +40,7 @@ async function getLatestInsights(): Promise<InsightListItem[]> {
     const { data } = await fetchPublishedInsights(supabase);
     return (data as InsightListItem[]).slice(0, 3);
   } catch (error) {
+    unstable_rethrow(error); // let Next's dynamic-rendering signal through; only report real failures
     reportError(error, { scope: 'home.insights' });
     return [];
   }
