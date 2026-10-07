@@ -1,24 +1,19 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, User } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import StructuredData from '@/components/StructuredData';
 import RemoteSafeImage from '@/components/RemoteSafeImage';
+import { formatPublishDate } from '@/components/InsightCard';
+import { chipClasses } from '@/components/ui/Chip';
+import GradientField from '@/components/ui/GradientField';
 import { absoluteUrl, buildBreadcrumbJsonLd } from '@/lib/site';
 import { fetchPublishedInsightBySlug } from '@/lib/insights';
 
 type InsightPageProps = {
   params: Promise<{ slug: string }>;
 };
-
-function formatPublishDate(value: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(value));
-}
 
 async function getInsight(slug: string) {
   const supabase = await createClient();
@@ -103,61 +98,54 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
   };
 
   return (
-    <div className="w-full px-4 py-12 sm:px-6 lg:px-8">
+    <>
       <StructuredData data={breadcrumbJsonLd} />
       <StructuredData data={articleJsonLd} />
-      <article className="mx-auto max-w-4xl">
-        <Link href="/insights" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-primary transition-colors hover:text-primary-dark">
-          <ArrowLeft size={16} />
-          Back to Insights
-        </Link>
 
-        <div className="mb-8 flex flex-wrap items-center gap-4 text-sm">
-          <span className="rounded-full bg-primary/10 px-4 py-1.5 font-bold uppercase tracking-widest text-primary">
-            {insight.category}
-          </span>
-          <span className="flex items-center gap-1 text-text-muted">
-            <Calendar size={14} />
-            {formatPublishDate(insight.published_at)}
-          </span>
-          <span className="flex items-center gap-1 text-text-muted">
-            <User size={14} />
-            {insight.author}
-          </span>
-          {insight.website_url && (
+      <header className="relative isolate overflow-hidden bg-ink px-5 pb-16 pt-36 text-white md:px-10 md:pt-44">
+        <GradientField variant="panel" className="-z-10" />
+        <div className="mx-auto max-w-[68ch]">
+          <Link href="/insights" className="inline-flex items-center gap-2 text-sm text-white/70 transition-colors hover:text-white">
+            <ArrowLeft size={16} aria-hidden="true" />
+            All insights
+          </Link>
+          <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-white/70">
+            <span className={chipClasses()}>{insight.category}</span>
+            <time dateTime={insight.published_at}>{formatPublishDate(insight.published_at, 'long')}</time>
+            <span>· {insight.author}</span>
+          </div>
+          <h1 className="display-md mt-6">{insight.title}</h1>
+          <p className="mt-5 text-lg leading-8 text-white/75">{insight.excerpt}</p>
+          {insight.website_url ? (
             <a
               href={insight.website_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-bold text-primary transition-colors hover:text-primary-dark"
+              className="mt-6 inline-flex items-center gap-1 text-sm text-copper-soft hover:text-white"
             >
-              Visit Live Website
+              Visit live website <ArrowUpRight size={14} aria-hidden="true" />
             </a>
-          )}
+          ) : null}
         </div>
+      </header>
 
-        <h1 className="mb-6 font-heading text-4xl font-black tracking-tight text-text-main md:text-6xl">
-          {insight.title}
-        </h1>
-        <p className="mb-10 text-xl leading-relaxed text-text-muted">
-          {insight.excerpt}
-        </p>
-
-        <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-3xl bg-background-light">
-          <RemoteSafeImage
-            src={insight.image_url || '/og-image.jpg'}
-            alt={insight.title}
-            className="object-cover object-center"
-            priority
-          />
-        </div>
-
-        <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-text-main prose-p:text-text-muted prose-a:text-primary">
-          {paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+      <article className="bg-paper px-5 py-16 md:px-10">
+        <div className="mx-auto max-w-[68ch]">
+          <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-card bg-ink-soft">
+            <RemoteSafeImage
+              src={insight.image_url || '/og-image.jpg'}
+              alt={insight.title}
+              className="h-full w-full object-cover object-center"
+              priority
+            />
+          </div>
+          <div className="prose prose-lg max-w-none prose-headings:font-medium prose-headings:tracking-tight prose-p:text-ink/80 prose-a:text-copper">
+            {paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </div>
       </article>
-    </div>
+    </>
   );
 }

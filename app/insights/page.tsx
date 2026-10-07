@@ -1,158 +1,68 @@
-import NewsletterForm from '@/components/NewsletterForm';
-import { createClient } from '@/lib/supabase/server';
-import Link from 'next/link';
-import { ArrowRight, Calendar, User } from 'lucide-react';
-import StructuredData from '@/components/StructuredData';
-import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
+import InsightCard, { type InsightListItem } from '@/components/InsightCard';
 import InsightsFeed from '@/components/InsightsFeed';
-import RemoteSafeImage from '@/components/RemoteSafeImage';
+import NewsletterForm from '@/components/NewsletterForm';
+import StructuredData from '@/components/StructuredData';
+import GlassPanel from '@/components/ui/GlassPanel';
+import PageHero from '@/components/ui/PageHero';
+import Section from '@/components/ui/Section';
 import { fetchPublishedInsights } from '@/lib/insights';
+import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
+import { createClient } from '@/lib/supabase/server';
 
 export const metadata = buildMetadata({
   title: 'Insights',
-  description: 'Deep dives into technology, product strategy, design systems, and search-ready digital execution.',
+  description: 'Notes from Sulva Tech on building websites, online stores and the systems behind them.',
   path: '/insights',
-  keywords: ['technology insights', 'product strategy articles', 'software delivery blog'],
+  keywords: ['website tips Nigeria', 'ecommerce advice', 'web design blog'],
 });
-
-type Insight = {
-  slug: string;
-  title: string;
-  category: string;
-  excerpt: string;
-  author: string;
-  image_url: string | null;
-  website_url: string | null;
-  published_at: string;
-  featured: boolean;
-  seo_title?: string | null;
-  seo_description?: string | null;
-  og_image_url?: string | null;
-};
-
-function formatPublishDate(value: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(value));
-}
 
 export const dynamic = 'force-dynamic';
 
 export default async function InsightsPage() {
   const supabase = await createClient();
-  const { data: insights, error } = await fetchPublishedInsights(supabase);
+  const { data, error } = await fetchPublishedInsights(supabase);
 
   if (error) {
     console.error('Failed to fetch insights:', error);
   }
 
-  const articles: Insight[] = insights || [];
-  const featuredArticle = articles.find((article) => article.featured) || articles[0];
-  const otherArticles = articles.filter((article) => article.slug !== featuredArticle?.slug);
+  const articles = (data ?? []) as InsightListItem[];
+  const featured = articles.find((article) => article.featured) ?? articles[0];
+  const others = articles.filter((article) => article.slug !== featured?.slug);
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: 'Home', path: '/' },
     { name: 'Insights', path: '/insights' },
   ]);
 
   return (
-    <div className="w-full px-4 py-12 sm:px-6 lg:px-8">
+    <>
       <StructuredData data={breadcrumbJsonLd} />
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-16 text-center">
-          <span className="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
-            Thought Leadership
-          </span>
-          <h1 className="mb-6 font-heading text-4xl font-black tracking-tight text-text-main md:text-6xl">
-            INSIGHTS FOR
-            <br />
-            <span className="text-primary">AMBITIOUS BRANDS.</span>
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-text-muted">
-            Deep dives into technology, strategy, and design. We share what we learn building the future.
-          </p>
-        </div>
+      <PageHero title="Insights" sub="Notes on building websites that work." />
 
-        {featuredArticle && (
-          <div className="relative mb-20 group">
-            <div className="absolute inset-0 rotate-1 rounded-3xl bg-primary/5 transition-transform group-hover:rotate-2"></div>
-            <div className="relative grid gap-0 overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg md:grid-cols-2">
-              <div className="relative h-64 overflow-hidden bg-background-light md:h-auto">
-                <RemoteSafeImage
-                  src={featuredArticle.image_url || '/og-image.jpg'}
-                  alt={featuredArticle.title}
-                  className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                  priority
-                />
-              </div>
-              <div className="flex flex-col justify-center p-8 md:p-12">
-                <div className="mb-6 flex items-center gap-4 text-sm">
-                  <span className="font-bold uppercase tracking-wider text-primary">{featuredArticle.category}</span>
-                  <span className="h-1 w-1 rounded-full bg-gray-300"></span>
-                  <span className="flex items-center gap-1 text-text-muted">
-                    <Calendar size={14} /> {formatPublishDate(featuredArticle.published_at)}
-                  </span>
-                </div>
-                <h2 className="mb-4 font-heading text-3xl font-bold leading-tight text-text-main transition-colors group-hover:text-primary md:text-4xl">
-                  {featuredArticle.title}
-                </h2>
-                <p className="mb-8 text-lg leading-relaxed text-text-muted">
-                  {featuredArticle.excerpt}
-                </p>
-                <div className="mt-auto flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500">
-                      <User size={20} />
-                    </div>
-                    <span className="text-sm font-medium text-text-main">{featuredArticle.author}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    {featuredArticle.website_url && (
-                      <a
-                        href={featuredArticle.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center font-bold text-text-main transition-colors hover:text-primary"
-                      >
-                        Visit Website
-                      </a>
-                    )}
-                    <Link href={`/insights/${featuredArticle.slug}`} className="inline-flex items-center font-bold text-primary transition-all hover:gap-2">
-                      Read Article <ArrowRight size={18} className="ml-2" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {articles.length === 0 ? (
-          <div className="mb-20 rounded-3xl border border-dashed border-gray-300 bg-white p-12 text-center text-text-muted">
-            No published insights yet.
-          </div>
+      <Section tone="paper">
+        {featured ? (
+          <InsightCard article={featured} featured as="h2" />
         ) : (
-          <InsightsFeed articles={otherArticles} />
+          <p className="rounded-card border border-dashed border-ink/20 p-12 text-center text-muted">
+            No posts yet. Check back soon.
+          </p>
         )}
-
-        <div id="newsletter" className="relative overflow-hidden rounded-3xl bg-surface-dark p-8 text-center md:p-16">
-          <div className="absolute left-0 top-0 z-0 h-full w-full overflow-hidden">
-            <div className="absolute left-1/4 top-0 h-64 w-64 rounded-full bg-primary opacity-20 blur-3xl"></div>
-            <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
+        {others.length > 0 ? (
+          <div className="mt-20 border-t border-ink/10 pt-16">
+            <InsightsFeed articles={others} />
           </div>
+        ) : null}
+      </Section>
 
-          <div className="relative z-10 mx-auto max-w-2xl">
-            <h2 className="mb-4 font-heading text-3xl font-bold text-white md:text-4xl">
-              Stay ahead of the curve.
-            </h2>
-            <p className="mb-8 text-gray-300">
-              Get the latest insights on technology, design, and strategy delivered straight to your inbox. No spam, just value.
-            </p>
+      <Section id="newsletter" tone="ink" gradient="cta">
+        <GlassPanel className="mx-auto max-w-2xl p-8 text-center md:p-12">
+          <h2 className="display-md">Get new posts by email.</h2>
+          <p className="mt-4 text-white/75">One short email when we publish something useful. No spam.</p>
+          <div className="mt-8 text-left">
             <NewsletterForm />
           </div>
-        </div>
-      </div>
-    </div>
+        </GlassPanel>
+      </Section>
+    </>
   );
 }
