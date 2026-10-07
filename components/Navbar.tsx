@@ -2,118 +2,154 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Logo from '@/components/Logo';
+import { buttonClasses } from '@/components/ui/Button';
+
+export const navLinks = [
+  { name: 'Work', href: '/work' },
+  { name: 'Services', href: '/services' },
+  { name: 'About', href: '/about' },
+  { name: 'Insights', href: '/insights' },
+];
+
+// Pages that open on a light section (no dark hero), so the nav starts solid.
+const LIGHT_TOP_ROUTES = ['/privacy-policy', '/terms-of-service', '/cookie-policy'];
+
+export function isActive(pathname: string, href: string) {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname() ?? '/';
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Services', href: '/services' },
-    { name: 'Work', href: '/work' },
-    { name: 'About', href: '/about' },
-    { name: 'Insights', href: '/insights' },
-    { name: 'Contact', href: '/contact' },
-  ];
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const focusables = () => Array.from(sheetRef.current?.querySelectorAll<HTMLElement>('a, button') ?? []);
+    focusables()[0]?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const items = focusables();
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const solid = scrolled || open || LIGHT_TOP_ROUTES.includes(pathname);
 
   return (
-    <nav
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 md:px-8 py-4',
-        isScrolled ? 'py-2' : 'py-6'
-      )}
-    >
-      <div
+    <header className="fixed inset-x-0 top-3 z-50 px-3 md:top-4 md:px-6">
+      <nav
+        aria-label="Main"
         className={cn(
-          'mx-auto max-w-7xl rounded-full px-6 py-3 flex items-center justify-between transition-all duration-300',
-          isScrolled || isMobileMenuOpen
-            ? 'bg-white/80 backdrop-blur-md shadow-lg border border-white/20'
-            : 'bg-transparent'
+          'mx-auto flex h-14 max-w-[1240px] items-center justify-between rounded-full border pl-5 pr-2 transition-[background-color,border-color,box-shadow] duration-300',
+          solid
+            ? 'border-white/10 bg-ink/70 shadow-[0_10px_40px_-12px_rgb(0_0_0/0.6)] backdrop-blur-xl'
+            : 'border-transparent',
         )}
       >
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="text-primary transition-transform group-hover:scale-110">
-            <Logo className="w-8 h-8" />
-          </div>
-          <span className="font-heading font-bold text-xl tracking-tight text-text-main">
-            Sulva Tech
-          </span>
+        <Link href="/" className="text-lg font-semibold tracking-tight text-white">
+          Sulva<span className="text-copper-soft">.</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={cn(
-                'text-sm font-medium transition-colors hover:text-primary',
-                pathname === link.href ? 'text-primary font-bold' : 'text-text-muted'
-              )}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
+        <ul className="hidden items-center gap-1 md:flex">
+          {navLinks.map((link) => {
+            const current = isActive(pathname, link.href);
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={current ? 'page' : undefined}
+                  className={cn(
+                    'rounded-full px-4 py-2 text-sm transition-colors',
+                    current ? 'bg-white/10 text-white' : 'text-white/70 hover:text-white',
+                  )}
+                >
+                  {link.name}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <Link
-            href="/contact"
-            className="bg-primary hover:bg-primary-dark text-white rounded-full px-6 py-2.5 text-sm font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/20"
-          >
-            Start a Project
+        <div className="flex items-center gap-2">
+          <Link href="/contact" className={buttonClasses({ className: 'hidden h-10 px-5 text-sm md:inline-flex' })}>
+            Start a project
           </Link>
+          <button
+            ref={toggleRef}
+            type="button"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            onClick={() => setOpen((value) => !value)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white md:hidden"
+          >
+            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
         </div>
+      </nav>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-text-main"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      {open ? (
+        <div
+          id="mobile-menu"
+          ref={sheetRef}
+          className="glass mx-auto mt-2 flex h-[calc(100dvh-6rem)] max-w-[1240px] flex-col justify-between rounded-panel bg-ink/80 p-4 md:hidden"
         >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="absolute top-full left-4 right-4 mt-2 p-6 bg-white rounded-2xl shadow-xl border border-gray-100 md:hidden flex flex-col gap-4 animate-in slide-in-from-top-5 fade-in duration-200">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={cn(
-                'text-lg font-medium py-2 border-b border-gray-50 last:border-0',
-                pathname === link.href ? 'text-primary' : 'text-text-main'
-              )}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <Link
-            href="/contact"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="bg-primary text-white text-center rounded-xl py-3 font-bold mt-2"
-          >
-            Start a Project
+          <ul className="flex flex-col">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={isActive(pathname, link.href) ? 'page' : undefined}
+                  className="block rounded-2xl px-3 py-3 text-3xl font-medium tracking-tight text-white"
+                >
+                  {link.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href="/contact" className={buttonClasses({ className: 'w-full' })}>
+            Start a project
           </Link>
         </div>
-      )}
-    </nav>
+      ) : null}
+    </header>
   );
 }

@@ -1,64 +1,69 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
+import { buttonClasses } from '@/components/ui/Button';
 
 export default function NewsletterForm() {
-    const [email, setEmail] = useState('');
-    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-    const [message, setMessage] = useState('');
+  const inputId = useId();
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
 
-    const handleSubscribe = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email) return;
+  const handleSubscribe = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!email) return;
 
-        setStatus('loading');
-        setMessage('');
-        try {
-            const response = await fetch('/api/newsletter', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
-            });
-            const payload = await response.json();
-            if (!response.ok) throw new Error(payload.error || 'Failed to subscribe');
-            setStatus('success');
-            setEmail('');
-        } catch (error) {
-            setStatus('error');
-            setMessage(error instanceof Error ? error.message : 'Failed to subscribe. Try again.');
-        }
-    };
-
-    if (status === 'success') {
-        return (
-            <div className="bg-white/10 border border-green-500/30 rounded-full px-6 py-4 text-green-300 font-medium animate-in fade-in zoom-in duration-300 shadow-inner">
-                Thanks for subscribing! Welcome to the loop.
-            </div>
-        );
+    setStatus('loading');
+    setMessage('');
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Failed to subscribe');
+      setStatus('success');
+      setEmail('');
+    } catch (error) {
+      setStatus('error');
+      setMessage(error instanceof Error ? error.message : 'Failed to subscribe. Try again.');
     }
+  };
 
+  if (status === 'success') {
     return (
-        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-grow flex flex-col gap-1">
-                <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
-                    className="w-full px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:bg-white/20 transition-all"
-                />
-                {status === 'error' && (
-                    <span className="text-red-400 text-sm pl-4 text-left">{message || 'Failed to subscribe. Try again.'}</span>
-                )}
-            </div>
-            <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="px-8 py-4 rounded-full bg-primary hover:bg-primary-dark disabled:opacity-70 text-white font-bold transition-colors shadow-lg whitespace-nowrap h-[58px]"
-            >
-                {status === 'loading' ? 'Sending...' : 'Subscribe'}
-            </button>
-        </form>
+      <p role="status" className="glass rounded-full px-5 py-3 text-sm text-white">
+        Thanks — you&apos;re on the list.
+      </p>
     );
+  }
+
+  return (
+    <form onSubmit={handleSubscribe}>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <label htmlFor={inputId} className="sr-only">
+          Email address
+        </label>
+        <input
+          id={inputId}
+          type="email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="you@company.com"
+          autoComplete="email"
+          className="glass h-12 w-full rounded-full px-5 text-[15px] text-white placeholder:text-white/45 outline-none focus-visible:outline-2 focus-visible:outline-copper"
+        />
+        <button type="submit" disabled={status === 'loading'} className={buttonClasses({ className: 'shrink-0' })}>
+          {status === 'loading' ? 'Sending…' : 'Subscribe'}
+        </button>
+      </div>
+      {status === 'error' ? (
+        <p role="alert" className="mt-2 pl-5 text-sm text-copper-soft">
+          {message}
+        </p>
+      ) : null}
+    </form>
+  );
 }
