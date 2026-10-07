@@ -6,27 +6,31 @@ export const siteConfig = {
   url: 'https://sulvatech.com',
   email: 'hello@sulvatech.com',
   careersEmail: 'careers@sulvatech.com',
-  phone: '+234 901 000 0000',
+  phone: '+234 701 743 9615',
+  phoneHref: 'tel:+2347017439615',
   location: 'Lagos, Nigeria',
-  tagline: 'Built to solve, designed to last.',
+  tagline: 'Websites that grow your brand.',
   description:
-    'Sulva Tech designs, builds, and grows premium digital products with senior-led engineering, product strategy, and brand-grade execution.',
+    'Sulva Tech designs and builds websites, online stores and the systems behind them for founders and growing businesses. Every site comes with its own dashboard.',
   ogImage: '/og-image.jpg',
+  founder: {
+    name: 'Iyiola Ogunjobi',
+    role: 'Founder',
+    portfolio: 'https://iyiola.sulvatech.com',
+  },
+  socials: [
+    { name: 'Instagram', handle: '@sulvatech', href: 'https://www.instagram.com/sulvatech' },
+    { name: 'TikTok', handle: '@sulvatech', href: 'https://www.tiktok.com/@sulvatech' },
+  ],
   keywords: [
     'Sulva Tech',
-    'software development agency',
-    'product engineering',
-    'web development Nigeria',
-    'digital product studio',
-    'technical partner',
-    'UI UX design agency',
+    'web design Lagos',
+    'website design Nigeria',
+    'ecommerce website Nigeria',
+    'web app development Nigeria',
+    'business website with dashboard',
   ],
-  services: [
-    'Product engineering',
-    'Technical strategy',
-    'Design systems',
-    'Growth-focused websites',
-  ],
+  services: ['Brand websites', 'Online stores', 'Products and apps'],
 } as const;
 
 type MetadataInput = {
