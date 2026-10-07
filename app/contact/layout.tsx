@@ -2,7 +2,7 @@ import { buildMetadata } from '@/lib/site';
 
 export const metadata = buildMetadata({
     title: 'Contact',
-    description: 'Get in touch with Sulva Tech to discuss your next website, product, system, or content-led growth project.',
+    description: 'Tell Sulva Tech about your website, online store or app. We reply within 1 working day.',
     path: '/contact',
 });
 
