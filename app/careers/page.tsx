@@ -1,45 +1,28 @@
-import Link from 'next/link';
-import { buildMetadata } from '@/lib/site';
+import Button from '@/components/ui/Button';
+import GlassPanel from '@/components/ui/GlassPanel';
+import Section, { Eyebrow } from '@/components/ui/Section';
+import { buildMetadata, siteConfig } from '@/lib/site';
 
 export const metadata = buildMetadata({
   title: 'Careers',
-  description: 'We are growing carefully. Share your strengths and we will reach out when the right role opens at Sulva Tech.',
+  description: "Sulva Tech isn't hiring right now. If you design or build for the web, send us your work.",
   path: '/careers',
 });
 
 export default function CareersPage() {
   return (
-    <div className="w-full px-6 py-16 md:py-24">
-      <div className="max-w-4xl mx-auto rounded-3xl border border-gray-200 bg-white p-10 md:p-16 text-center shadow-sm">
-        <span className="inline-flex rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
-          Careers
-        </span>
-        <h1 className="mt-6 text-4xl font-heading font-black tracking-tight text-text-main md:text-5xl">
-          Build With Sulva Tech
-        </h1>
-        <p className="mt-6 text-lg leading-relaxed text-text-muted">
-          We are not listing open roles publicly yet, but we are actively meeting exceptional engineers,
-          designers, and product thinkers for future opportunities.
+    <Section tone="ink" gradient="hero" className="flex min-h-[80vh] items-center pt-40">
+      <GlassPanel className="max-w-2xl p-8 md:p-12">
+        <Eyebrow tone="ink">Careers</Eyebrow>
+        <h1 className="display-lg mt-4">Work with us.</h1>
+        <p className="mt-6 text-lg leading-8 text-white/75">
+          We&apos;re not hiring right now. If you design or build for the web and want to be on our radar, send your
+          work to {siteConfig.careersEmail}.
         </p>
-        <p className="mt-4 text-lg leading-relaxed text-text-muted">
-          If you would like to be considered for upcoming roles, send us your background and the kind of
-          work you do best.
-        </p>
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link
-            href="/contact"
-            className="flex h-12 items-center justify-center rounded-full bg-primary px-8 text-base font-bold text-white transition-all hover:bg-primary-dark"
-          >
-            Contact the Team
-          </Link>
-          <a
-            href="mailto:careers@sulvatech.com"
-            className="flex h-12 items-center justify-center rounded-full border border-gray-200 px-8 text-base font-bold text-text-main transition-colors hover:border-primary hover:text-primary"
-          >
-            careers@sulvatech.com
-          </a>
+        <div className="mt-8">
+          <Button href={`mailto:${siteConfig.careersEmail}`}>Send your work</Button>
         </div>
-      </div>
-    </div>
+      </GlassPanel>
+    </Section>
   );
 }
