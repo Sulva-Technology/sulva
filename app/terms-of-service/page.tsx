@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/site';
+import LegalPage from '@/components/LegalPage';
 
 export const metadata = buildMetadata({
   title: 'Terms of Service',
@@ -8,9 +9,7 @@ export const metadata = buildMetadata({
 
 export default function TermsOfServicePage() {
   return (
-    <div className="w-full px-6 py-16 md:py-24">
-      <article className="prose prose-lg mx-auto max-w-4xl prose-headings:font-heading prose-headings:text-text-main prose-p:text-text-muted prose-li:text-text-muted">
-        <h1>Terms of Service</h1>
+    <LegalPage title="Terms of Service">
         <p>
           By using the Sulva Tech website, you agree to use it lawfully and not to interfere with
           its operation, security, or availability.
@@ -31,7 +30,6 @@ export default function TermsOfServicePage() {
           Sulva Tech may suspend access or block activity that appears abusive, unlawful, or harmful to the site,
           our systems, or other users.
         </p>
-      </article>
-    </div>
+    </LegalPage>
   );
 }

@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/site';
+import LegalPage from '@/components/LegalPage';
 
 export const metadata = buildMetadata({
   title: 'Cookie Policy',
@@ -8,9 +9,7 @@ export const metadata = buildMetadata({
 
 export default function CookiePolicyPage() {
   return (
-    <div className="w-full px-6 py-16 md:py-24">
-      <article className="prose prose-lg mx-auto max-w-4xl prose-headings:font-heading prose-headings:text-text-main prose-p:text-text-muted prose-li:text-text-muted">
-        <h1>Cookie Policy</h1>
+    <LegalPage title="Cookie Policy">
         <p>
           Sulva Tech may use cookies and similar technologies to support essential site
           functionality, understand usage patterns, and improve user experience.
@@ -28,7 +27,6 @@ export default function CookiePolicyPage() {
           Visitors can manage optional cookies through their browser settings or any consent controls made available
           on the site when non-essential tracking is enabled.
         </p>
-      </article>
-    </div>
+    </LegalPage>
   );
 }

@@ -1,4 +1,5 @@
 import { buildMetadata } from '@/lib/site';
+import LegalPage from '@/components/LegalPage';
 
 export const metadata = buildMetadata({
   title: 'Privacy Policy',
@@ -8,9 +9,7 @@ export const metadata = buildMetadata({
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="w-full px-6 py-16 md:py-24">
-      <article className="prose prose-lg mx-auto max-w-4xl prose-headings:font-heading prose-headings:text-text-main prose-p:text-text-muted prose-li:text-text-muted">
-        <h1>Privacy Policy</h1>
+    <LegalPage title="Privacy Policy">
         <p>
           Sulva Tech collects the information you submit through contact and newsletter forms
           so we can respond to enquiries, manage project conversations, and share requested
@@ -34,7 +33,6 @@ export default function PrivacyPolicyPage() {
           legal obligations, or legitimate operational needs. When information is no longer needed, it is deleted
           or anonymized in line with our retention practices.
         </p>
-      </article>
-    </div>
+    </LegalPage>
   );
 }
