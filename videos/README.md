@@ -49,3 +49,17 @@ Add an entry to `projects.mjs` with `name`, `url`, `teaser(d)`, `walkthrough(d)`
 ## After recording
 
 Videos come out raw, with no music or captions. Drop them into CapCut to add auto-captions, music, and your logo, then post.
+
+## Web loops for sulvatech.com
+
+The site shows an 8-second muted loop and a poster for each project, read from `public/work/<project>/`.
+
+```bash
+node record.mjs all --kind teaser --format landscape   # source clips
+node stills.mjs all                                    # hero posters
+npm run web                                            # writes ../public/work/<project>/teaser.mp4 + poster.jpg
+```
+
+Loops are re-encoded until each is 2.5 MB or less. Commit the files in `public/work/`.
+
+If a site can't be captured, `node placeholder.mjs <project> "<Name>"` writes a branded title poster instead; re-run record/stills/web once the site is back.

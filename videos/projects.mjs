@@ -264,4 +264,52 @@ export const projects = {
       await d.hold(3500);
     },
   },
+  mealdirect: {
+    name: 'Meal Direct',
+    url: 'https://www.mealdirectly.com',
+    // Hero has a 3D model you can drag to spin. Drag right and back so the cursor ends where it started.
+    async spin(d) {
+      if (d.page.viewportSize().width < 768) return;
+      const canvas = d.page.locator('canvas').first();
+      const box = await canvas.boundingBox({ timeout: 5000 }).catch(() => null);
+      if (!box) return;
+      await d.point(canvas);
+      const x = box.x + box.width / 2;
+      const y = box.y + box.height / 2;
+      await d.page.mouse.down();
+      for (let i = 1; i <= 40; i++) await d.page.mouse.move(x + i * 6, y);
+      for (let i = 39; i >= 0; i--) await d.page.mouse.move(x + i * 6, y);
+      await d.page.mouse.up();
+    },
+    async teaser(d) {
+      await d.load(this.url);
+      await d.hold(2000);
+      await this.spin(d);
+      await d.hold(1500);
+      await d.scrollTo(d.page.getByText('A Better Way To Eat On Campus').first(), 2400);
+      await d.hold(3000);
+      await d.scrollTo(d.page.getByText('Why Students Choose Us').first(), 2400);
+      await d.hold(3000);
+      await d.scrollTo(d.page.getByText('The Ultimate Student App Experience').first(), 2400);
+      await d.hold(3500);
+    },
+    async walkthrough(d) {
+      await d.load(this.url);
+      await d.hold(3000);
+      await this.spin(d);
+      await d.hold(2000);
+      await d.scrollTo(d.page.getByText("Campus Food Shouldn't Be Stressful").first(), 2400);
+      await d.hold(3500);
+      await d.scrollTo(d.page.getByText('A Better Way To Eat On Campus').first(), 2400);
+      await d.hold(4000);
+      await d.scrollTo(d.page.getByText('Why Students Choose Us').first(), 2400);
+      await d.hold(4000);
+      await d.scrollTo(d.page.getByText('The Ultimate Student App Experience').first(), 2400);
+      await d.hold(4000);
+      await d.cruise(4, 2600);
+      await d.hold(3000);
+      await d.top(2000);
+      await d.hold(3000);
+    },
+  },
 };

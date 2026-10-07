@@ -42,6 +42,21 @@ const shots = {
       { name: 'join', path: '/', text: 'Ready to stand out?' },
     ],
   },
+  mealdirect: {
+    url: 'https://www.mealdirectly.com',
+    list: [
+      { name: 'hero', path: '/' },
+      { name: 'how', path: '/', text: 'A Better Way To Eat On Campus' },
+      { name: 'app', path: '/', text: 'The Ultimate Student App Experience' },
+    ],
+  },
+  thedmashop: {
+    url: 'https://www.thedmashop.com',
+    list: [
+      { name: 'hero', path: '/', waitFor: 'Shop' },
+      { name: 'shop', path: '/shop' },
+    ],
+  },
 };
 
 const target = process.argv[2] ?? 'all';
