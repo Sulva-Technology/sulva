@@ -8,3 +8,4 @@ coverage/
 
 # Project showcase recordings
 videos/out/
+.lighthouse/

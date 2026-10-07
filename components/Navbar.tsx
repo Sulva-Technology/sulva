@@ -24,7 +24,9 @@ export function isActive(pathname: string, href: string) {
 export default function Navbar() {
   const pathname = usePathname() ?? '/';
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  // The menu remembers the page it was opened on, so navigating closes it without an effect.
+  const [openOn, setOpenOn] = useState<string | null>(null);
+  const open = openOn === pathname;
   const sheetRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -36,17 +38,13 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (!open) return;
     const focusables = () => Array.from(sheetRef.current?.querySelectorAll<HTMLElement>('a, button') ?? []);
     focusables()[0]?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setOpen(false);
+        setOpenOn(null);
         toggleRef.current?.focus();
         return;
       }
@@ -118,7 +116,7 @@ export default function Navbar() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? 'Close menu' : 'Open menu'}
-            onClick={() => setOpen((value) => !value)}
+            onClick={() => setOpenOn(open ? null : pathname)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white md:hidden"
           >
             {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}

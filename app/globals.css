@@ -13,18 +13,9 @@
   --color-muted: #5e615f;
   --color-muted-dark: rgb(255 255 255 / 0.64);
 
-  /* Legacy names so not-yet-migrated pages and components/admin/* keep compiling.
-     Trimmed to --color-primary only in Task 16. */
+  /* Legacy name used only by components/admin/*. Public pages must not use it
+     (tests/site-guards.test.ts enforces this). */
   --color-primary: #b8673a;
-  --color-primary-dark: #8f4d29;
-  --color-primary-light: #e2a57c;
-  --color-background-light: #f4f1ec;
-  --color-background-dark: #0b0d0c;
-  --color-surface-light: #ffffff;
-  --color-surface-dark: #151918;
-  --color-text-main: #0b0d0c;
-  --color-text-muted: #5e615f;
-  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;

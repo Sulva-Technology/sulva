@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { usePrefersReducedMotion } from '@/components/ui/usePrefersReducedMotion';
 import { cn } from '@/lib/utils';
 
 type VideoFrameProps = {
@@ -22,6 +23,8 @@ export function canAutoplay() {
   return !connection?.saveData;
 }
 
+const noopSubscribe = () => () => {};
+
 export default function VideoFrame({
   src,
   poster,
@@ -33,11 +36,10 @@ export default function VideoFrame({
   sizes = '(min-width: 1024px) 60vw, 100vw',
 }: VideoFrameProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    setEnabled(Boolean(src) && canAutoplay());
-  }, [src]);
+  // False on the server and during hydration, so the poster always renders first.
+  const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const reduceMotion = usePrefersReducedMotion();
+  const enabled = hydrated && Boolean(src) && !reduceMotion && canAutoplay();
 
   useEffect(() => {
     const video = videoRef.current;
