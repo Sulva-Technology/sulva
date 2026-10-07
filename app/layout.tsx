@@ -1,21 +1,22 @@
 import type { Metadata } from 'next';
-import { Inter, Outfit } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import HideOnAdmin from '@/components/HideOnAdmin';
 import StructuredData from '@/components/StructuredData';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
 import { absoluteUrl, siteConfig } from '@/lib/site';
 
-const inter = Inter({
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-geist',
   display: 'swap',
 });
 
-const outfit = Outfit({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-outfit',
+  variable: '--font-geist-mono',
   display: 'swap',
 });
 
@@ -77,6 +78,13 @@ const organizationJsonLd = {
   logo: absoluteUrl('/logo.jpg'),
   description: siteConfig.description,
   email: siteConfig.email,
+  telephone: siteConfig.phone,
+  sameAs: siteConfig.socials.map((social) => social.href),
+  founder: {
+    '@type': 'Person',
+    name: siteConfig.founder.name,
+    url: siteConfig.founder.portfolio,
+  },
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lagos',
@@ -105,6 +113,7 @@ const serviceJsonLd = {
     addressCountry: 'Nigeria',
   },
   email: siteConfig.email,
+  telephone: siteConfig.phone,
   knowsAbout: siteConfig.services,
 };
 
@@ -126,7 +135,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <head>
         <StructuredData data={organizationJsonLd} />
         <StructuredData data={websiteJsonLd} />
@@ -134,10 +143,14 @@ export default function RootLayout({
         <StructuredData data={navigationJsonLd} />
         <AnalyticsScripts />
       </head>
-      <body className="bg-background-light text-text-main font-sans antialiased min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow pt-24">{children}</main>
-        <Footer />
+      <body className="flex min-h-screen flex-col bg-paper font-sans text-ink antialiased">
+        <HideOnAdmin>
+          <Navbar />
+        </HideOnAdmin>
+        <main className="flex-grow">{children}</main>
+        <HideOnAdmin>
+          <Footer />
+        </HideOnAdmin>
       </body>
     </html>
   );

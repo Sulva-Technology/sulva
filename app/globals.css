@@ -1,22 +1,115 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
-  --color-primary: #690dab;
-  --color-primary-dark: #4a097a;
-  --color-primary-light: #8e3ccb;
-  --color-background-light: #f7f6f8;
-  --color-background-dark: #1a1022;
-  --color-surface-light: #ffffff;
-  --color-surface-dark: #2d1b36;
-  --color-text-main: #160d1b;
-  --color-text-muted: #6b5e70;
+  --color-ink: #0b0d0c;
+  --color-ink-soft: #151918;
+  --color-paper: #f4f1ec;
+  --color-paper-raised: #ffffff;
+  --color-teal: #0f3b36;
+  --color-teal-glow: #1f6b5f;
+  --color-copper: #b8673a;
+  --color-copper-soft: #e2a57c;
+  --color-muted: #5e615f;
+  --color-muted-dark: rgb(255 255 255 / 0.64);
 
-  --font-sans: var(--font-inter);
-  --font-heading: var(--font-outfit);
+  /* Legacy names so not-yet-migrated pages and components/admin/* keep compiling.
+     Trimmed to --color-primary only in Task 16. */
+  --color-primary: #b8673a;
+  --color-primary-dark: #8f4d29;
+  --color-primary-light: #e2a57c;
+  --color-background-light: #f4f1ec;
+  --color-background-dark: #0b0d0c;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #151918;
+  --color-text-main: #0b0d0c;
+  --color-text-muted: #5e615f;
+  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --radius-card: 20px;
+  --radius-panel: 28px;
+
+  --animate-drift: drift 24s ease-in-out infinite alternate;
+
+  @keyframes drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(-4%, 3%, 0) scale(1.08);
+    }
+  }
 }
 
-@layer utilities {
-  .glass-nav {
-    @apply bg-white/70 backdrop-blur-md border border-white/30;
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  ::selection {
+    background-color: var(--color-copper);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-copper);
+    outline-offset: 2px;
+  }
+}
+
+/* The one glass recipe. Only for elements layered over a gradient or video. */
+@utility glass {
+  background-color: rgb(255 255 255 / 0.08);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 20px 60px -20px rgb(0 0 0 / 0.5);
+
+  @media (max-width: 767px) {
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background-color: rgb(21 25 24 / 0.92);
+  }
+}
+
+/* Fine film grain, inline SVG so it costs no request. */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@utility display-xl {
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+@utility display-lg {
+  font-size: clamp(2.5rem, 5.5vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+@utility display-md {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift {
+    animation: none;
   }
 }
