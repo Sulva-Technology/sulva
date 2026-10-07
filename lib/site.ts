@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 export const siteConfig = {
   name: 'Sulva Tech',
+  alternateName: 'Sulva Technology',
   shortName: 'Sulva',
   url: 'https://sulvatech.com',
   email: 'hello@sulvatech.com',
@@ -10,6 +11,8 @@ export const siteConfig = {
   phoneHref: 'tel:+2347017439615',
   location: 'Lagos, Nigeria',
   tagline: 'Websites that grow your brand.',
+  // What people type into Google. Used for the home page title.
+  seoTitle: 'Web Design Company in Lagos, Nigeria',
   description:
     'Sulva Tech designs and builds websites, online stores and the systems behind them for founders and growing businesses. Every site comes with its own dashboard.',
   ogImage: '/og-image.jpg',
@@ -24,8 +27,10 @@ export const siteConfig = {
   ],
   keywords: [
     'Sulva Tech',
-    'web design Lagos',
+    'Sulva Technology',
+    'web design company Lagos',
     'website design Nigeria',
+    'web developer Lagos',
     'ecommerce website Nigeria',
     'web app development Nigeria',
     'business website with dashboard',
@@ -33,12 +38,17 @@ export const siteConfig = {
   services: ['Brand websites', 'Online stores', 'Products and apps'],
 } as const;
 
+export const organizationId = `${siteConfig.url}/#organization`;
+export const websiteId = `${siteConfig.url}/#website`;
+
 type MetadataInput = {
   title: string;
   description: string;
   path: string;
   keywords?: string[];
   image?: string;
+  // Use the title as written, without the "| Sulva Tech" suffix.
+  absoluteTitle?: boolean;
 };
 
 export function absoluteUrl(path: string) {
@@ -53,13 +63,14 @@ export function buildMetadata({
   path,
   keywords = [],
   image = siteConfig.ogImage,
+  absoluteTitle = false,
 }: MetadataInput): Metadata {
-  const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+  const fullTitle = absoluteTitle || title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
   const canonical = absoluteUrl(path);
   const imageUrl = absoluteUrl(image);
 
   return {
-    title,
+    title: absoluteTitle ? { absolute: title } : title,
     description,
     keywords: [...siteConfig.keywords, ...keywords],
     alternates: {
@@ -105,3 +116,15 @@ export function buildBreadcrumbJsonLd(
   };
 }
 
+
+export function buildFaqJsonLd(faqs: Array<{ question: string; answer: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  };
+}

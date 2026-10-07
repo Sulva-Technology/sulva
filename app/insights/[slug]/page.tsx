@@ -8,7 +8,7 @@ import RemoteSafeImage from '@/components/RemoteSafeImage';
 import { formatPublishDate } from '@/components/InsightCard';
 import { chipClasses } from '@/components/ui/Chip';
 import GradientField from '@/components/ui/GradientField';
-import { absoluteUrl, buildBreadcrumbJsonLd } from '@/lib/site';
+import { absoluteUrl, buildBreadcrumbJsonLd, organizationId, siteConfig } from '@/lib/site';
 import { fetchPublishedInsightBySlug } from '@/lib/insights';
 
 type InsightPageProps = {
@@ -27,6 +27,19 @@ async function getInsight(slug: string) {
   return data;
 }
 
+type Insight = NonNullable<Awaited<ReturnType<typeof getInsight>>>;
+
+function insightSeo(insight: Insight) {
+  return {
+    title: insight.seo_title || insight.title,
+    description: insight.seo_description || insight.excerpt,
+    url: insight.canonical_url || absoluteUrl(`/insights/${insight.slug}`),
+    // Stored paths can be relative; schema and social cards need full URLs.
+    image: absoluteUrl(insight.og_image_url || insight.image_url || siteConfig.ogImage),
+    modified: insight.updated_at || insight.published_at,
+  };
+}
+
 export async function generateMetadata({ params }: InsightPageProps): Promise<Metadata> {
   const { slug } = await params;
   const insight = await getInsight(slug);
@@ -34,27 +47,37 @@ export async function generateMetadata({ params }: InsightPageProps): Promise<Me
   if (!insight) {
     return {
       title: 'Insight Not Found',
+      robots: { index: false, follow: true },
     };
   }
 
+  const seo = insightSeo(insight);
+
   return {
-    title: insight.seo_title || insight.title,
-    description: insight.seo_description || insight.excerpt,
+    title: seo.title,
+    description: seo.description,
+    authors: [{ name: insight.author }],
     alternates: {
-      canonical: insight.canonical_url || absoluteUrl(`/insights/${slug}`),
+      canonical: seo.url,
     },
     openGraph: {
-      title: insight.seo_title || insight.title,
-      description: insight.seo_description || insight.excerpt,
+      title: seo.title,
+      description: seo.description,
       type: 'article',
-      url: insight.canonical_url || absoluteUrl(`/insights/${slug}`),
-      images: [insight.og_image_url || insight.image_url || absoluteUrl('/og-image.jpg')],
+      url: seo.url,
+      siteName: siteConfig.name,
+      locale: 'en_US',
+      publishedTime: insight.published_at,
+      modifiedTime: seo.modified,
+      authors: [insight.author],
+      section: insight.category,
+      images: [{ url: seo.image, alt: insight.title }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: insight.seo_title || insight.title,
-      description: insight.seo_description || insight.excerpt,
-      images: [insight.og_image_url || insight.image_url || absoluteUrl('/og-image.jpg')],
+      title: seo.title,
+      description: seo.description,
+      images: [seo.image],
     },
   };
 }
@@ -73,28 +96,35 @@ export default async function InsightDetailPage({ params }: InsightPageProps) {
     { name: 'Insights', path: '/insights' },
     { name: insight.title, path: `/insights/${insight.slug}` },
   ]);
+  const seo = insightSeo(insight);
   const articleJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: insight.seo_title || insight.title,
-    description: insight.seo_description || insight.excerpt,
-    image: [insight.og_image_url || insight.image_url || absoluteUrl('/og-image.jpg')],
+    '@type': 'BlogPosting',
+    '@id': `${seo.url}#article`,
+    headline: seo.title,
+    description: seo.description,
+    url: seo.url,
+    image: [seo.image],
+    articleSection: insight.category,
+    inLanguage: 'en',
     author: {
       '@type': 'Person',
       name: insight.author,
       jobTitle: insight.author_role || undefined,
+      ...(insight.author === siteConfig.founder.name ? { url: siteConfig.founder.portfolio } : {}),
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Sulva Tech',
+      '@id': organizationId,
+      name: siteConfig.name,
       logo: {
         '@type': 'ImageObject',
         url: absoluteUrl('/logo.jpg'),
       },
     },
-    mainEntityOfPage: insight.canonical_url || absoluteUrl(`/insights/${insight.slug}`),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': seo.url },
     datePublished: insight.published_at,
-    dateModified: insight.published_at,
+    dateModified: seo.modified,
   };
 
   return (

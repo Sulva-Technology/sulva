@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -6,7 +6,8 @@ import Footer from '@/components/Footer';
 import HideOnAdmin from '@/components/HideOnAdmin';
 import StructuredData from '@/components/StructuredData';
 import AnalyticsScripts from '@/components/AnalyticsScripts';
-import { absoluteUrl, siteConfig } from '@/lib/site';
+import { services } from '@/lib/services';
+import { absoluteUrl, organizationId, siteConfig, websiteId } from '@/lib/site';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -20,16 +21,28 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
+const bingVerification = process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION;
+
+export const viewport: Viewport = {
+  themeColor: '#0b0d0c',
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | ${siteConfig.tagline}`,
+    default: `${siteConfig.seoTitle} | ${siteConfig.name}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.founder.name, url: siteConfig.founder.portfolio }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: 'technology',
   keywords: [...siteConfig.keywords],
+  formatDetection: { telephone: false, email: false, address: false },
   openGraph: {
-    title: `${siteConfig.name} | ${siteConfig.tagline}`,
+    title: `${siteConfig.seoTitle} | ${siteConfig.name}`,
     description: siteConfig.description,
     url: siteConfig.url,
     siteName: siteConfig.name,
@@ -38,7 +51,7 @@ export const metadata: Metadata = {
         url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-        alt: `${siteConfig.name} - ${siteConfig.tagline}`,
+        alt: `${siteConfig.name}: ${siteConfig.tagline}`,
       },
     ],
     locale: 'en_US',
@@ -46,7 +59,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${siteConfig.name} | ${siteConfig.tagline}`,
+    title: `${siteConfig.seoTitle} | ${siteConfig.name}`,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
   },
@@ -63,66 +76,68 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    ...(bingVerification ? { other: { 'msvalidate.01': bingVerification } } : {}),
   },
 };
 
+// One entity for the business, referenced by @id from the website and from pages.
 const organizationJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': 'ProfessionalService',
+  '@id': organizationId,
   name: siteConfig.name,
+  alternateName: siteConfig.alternateName,
   url: siteConfig.url,
-  logo: absoluteUrl('/logo.jpg'),
+  logo: {
+    '@type': 'ImageObject',
+    url: absoluteUrl('/logo.jpg'),
+    width: 512,
+    height: 512,
+  },
+  image: absoluteUrl(siteConfig.ogImage),
   description: siteConfig.description,
+  slogan: siteConfig.tagline,
   email: siteConfig.email,
   telephone: siteConfig.phone,
   sameAs: siteConfig.socials.map((social) => social.href),
   founder: {
     '@type': 'Person',
     name: siteConfig.founder.name,
+    jobTitle: siteConfig.founder.role,
     url: siteConfig.founder.portfolio,
   },
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Lagos',
-    addressCountry: 'Nigeria',
+    addressRegion: 'Lagos',
+    addressCountry: 'NG',
+  },
+  areaServed: [{ '@type': 'Country', name: 'Nigeria' }, 'Worldwide'],
+  knowsAbout: ['Web design', 'Web development', 'Ecommerce websites', 'Web app development', 'SEO'],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Services',
+    itemListElement: services.map((service) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: service.name,
+        description: service.seoDescription,
+        url: absoluteUrl(`/services/${service.slug}`),
+      },
+    })),
   },
 };
 
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': websiteId,
   name: siteConfig.name,
+  alternateName: siteConfig.alternateName,
   url: siteConfig.url,
-};
-
-const serviceJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
-  name: siteConfig.name,
-  url: siteConfig.url,
-  image: absoluteUrl(siteConfig.ogImage),
-  description: siteConfig.description,
-  areaServed: 'Worldwide',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Lagos',
-    addressCountry: 'Nigeria',
-  },
-  email: siteConfig.email,
-  telephone: siteConfig.phone,
-  knowsAbout: siteConfig.services,
-};
-
-const navigationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  itemListElement: [
-    { '@type': 'SiteNavigationElement', position: 1, name: 'Services', url: absoluteUrl('/services') },
-    { '@type': 'SiteNavigationElement', position: 2, name: 'Work', url: absoluteUrl('/work') },
-    { '@type': 'SiteNavigationElement', position: 3, name: 'About', url: absoluteUrl('/about') },
-    { '@type': 'SiteNavigationElement', position: 4, name: 'Insights', url: absoluteUrl('/insights') },
-    { '@type': 'SiteNavigationElement', position: 5, name: 'Contact', url: absoluteUrl('/contact') },
-  ],
+  inLanguage: 'en',
+  publisher: { '@id': organizationId },
 };
 
 export default function RootLayout({
@@ -135,8 +150,6 @@ export default function RootLayout({
       <head>
         <StructuredData data={organizationJsonLd} />
         <StructuredData data={websiteJsonLd} />
-        <StructuredData data={serviceJsonLd} />
-        <StructuredData data={navigationJsonLd} />
         <AnalyticsScripts />
       </head>
       <body className="flex min-h-screen flex-col bg-paper font-sans text-ink antialiased">

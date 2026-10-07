@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import VideoFrame from '@/components/ui/VideoFrame';
 import { useTabs } from '@/components/ui/useTabs';
 import { cn } from '@/lib/utils';
@@ -49,6 +51,12 @@ export default function ServicesShowcase({ items }: { items: Item[] }) {
         <p className="mt-4 text-sm text-white/60">
           Example: <span className="text-white">{current.example.name}</span> — {current.example.oneLiner}
         </p>
+        <Link
+          href={`/services/${current.service.slug}`}
+          className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white underline decoration-copper underline-offset-4"
+        >
+          More about {current.service.name.toLowerCase()} <ArrowRight size={14} aria-hidden="true" />
+        </Link>
       </div>
     </div>
   );

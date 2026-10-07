@@ -8,9 +8,9 @@ import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
 import { caseStudies, getFeaturedCaseStudy } from '@/lib/work';
 
 export const metadata = buildMetadata({
-  title: 'Work',
+  title: 'Our Work: Websites, Online Stores & Apps',
   description:
-    'Live websites and platforms we designed and built: Meal Direct, Itzlolabeauty, theDMAshop, Mindfire Homes, Olorunleke Ojuolape and The Inner Circle.',
+    'Websites, online stores and apps we designed and built: Meal Direct, Itzlolabeauty, theDMAshop, Mindfire Homes, Olorunleke Ojuolape and The Inner Circle.',
   path: '/work',
   keywords: ['web design portfolio Nigeria', 'Meal Direct', 'Mindfire Homes website'],
 });
@@ -24,7 +24,7 @@ export default function WorkPage() {
   return (
     <>
       <StructuredData data={breadcrumbJsonLd} />
-      <PageHero eyebrow="Work" title="Work we're proud of." sub="Real businesses, live sites. Click through and try them." />
+      <PageHero eyebrow="Work" title="Work we're proud of." sub="Websites, online stores and apps for real businesses. They're live, so click through and try them." />
       <FeaturedCaseStudy study={getFeaturedCaseStudy()} eyebrow="Featured" />
       <Section tone="paper" className="border-t border-ink/10" eyebrow="All projects">
         <WorkShowcase studies={caseStudies} />

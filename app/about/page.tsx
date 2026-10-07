@@ -8,9 +8,9 @@ import Section, { Eyebrow } from '@/components/ui/Section';
 import { buildBreadcrumbJsonLd, buildMetadata, siteConfig } from '@/lib/site';
 
 export const metadata = buildMetadata({
-  title: 'About',
+  title: 'About Our Web Design Studio in Lagos',
   description:
-    'Sulva Tech is a Lagos studio that designs and builds websites, online stores and the systems behind them. Every client gets their own dashboard.',
+    'Sulva Tech is a web design studio in Lagos, Nigeria, founded by Iyiola Ogunjobi. We build websites, online stores and the systems behind them.',
   path: '/about',
   keywords: ['about Sulva Tech', 'Iyiola Ogunjobi', 'web studio Lagos'],
 });

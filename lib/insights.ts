@@ -7,7 +7,7 @@ const listSelect =
   'slug, title, category, excerpt, author, image_url, og_image_url, website_url, published_at, featured, seo_title, seo_description';
 
 const detailSelect =
-  'slug, title, category, excerpt, content, author, author_role, image_url, og_image_url, website_url, seo_title, seo_description, canonical_url, published_at';
+  'slug, title, category, excerpt, content, author, author_role, image_url, og_image_url, website_url, seo_title, seo_description, canonical_url, published_at, updated_at';
 
 function isMissingStatusColumn(error: { message?: string; details?: string; hint?: string } | null) {
   const text = `${error?.message ?? ''} ${error?.details ?? ''} ${error?.hint ?? ''}`.toLowerCase();

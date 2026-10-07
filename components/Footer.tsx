@@ -3,15 +3,15 @@ import { ArrowUpRight } from 'lucide-react';
 import Logo from '@/components/Logo';
 import NewsletterForm from '@/components/NewsletterForm';
 import GradientField from '@/components/ui/GradientField';
+import { services } from '@/lib/services';
 import { siteConfig } from '@/lib/site';
 
 const columns = [
   {
-    title: 'Work',
+    title: 'Services',
     links: [
+      ...services.map((service) => ({ name: service.name, href: `/services/${service.slug}` })),
       { name: 'All work', href: '/work' },
-      { name: 'Meal Direct', href: '/work#mealdirect' },
-      { name: 'Services', href: '/services' },
     ],
   },
   {

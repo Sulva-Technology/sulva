@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { Sidebar } from '@/components/admin/Sidebar';
 import { requireAdminUser } from '@/lib/supabase/admin';
+
+export const metadata: Metadata = {
+    title: 'Admin',
+    robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({
     children,

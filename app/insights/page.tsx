@@ -10,8 +10,9 @@ import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata = buildMetadata({
-  title: 'Insights',
-  description: 'Notes from Sulva Tech on building websites, online stores and the systems behind them.',
+  title: 'Insights on Websites, Online Stores & Apps',
+  description:
+    'Notes from Sulva Tech on building websites, online stores and the systems behind them, with case studies from projects we have shipped.',
   path: '/insights',
   keywords: ['website tips Nigeria', 'ecommerce advice', 'web design blog'],
 });

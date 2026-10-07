@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { absoluteUrl, siteConfig } from '@/lib/site';
 
 export default function robots(): MetadataRoute.Robots {
     return {
@@ -6,9 +7,11 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/api/', '/_next/'],
+                // Never block /_next/: Google needs its CSS, JS and images to render pages.
+                disallow: ['/admin', '/api/'],
             },
         ],
-        sitemap: 'https://sulvatech.com/sitemap.xml',
+        sitemap: absoluteUrl('/sitemap.xml'),
+        host: siteConfig.url,
     };
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { siteConfig } from '@/lib/site';
+import { buildFaqJsonLd, buildMetadata, siteConfig } from '@/lib/site';
 
 describe('siteConfig', () => {
   it('uses the real phone number with a matching tel: link', () => {
@@ -25,5 +25,35 @@ describe('siteConfig', () => {
   it('describes the new positioning', () => {
     expect(siteConfig.tagline).toBe('Websites that grow your brand.');
     expect(siteConfig.description).toContain('systems behind them');
+  });
+
+  it('targets a search phrase in the home title', () => {
+    expect(siteConfig.seoTitle).toMatch(/web design/i);
+    expect(siteConfig.seoTitle).toMatch(/Lagos/);
+  });
+});
+
+describe('buildMetadata', () => {
+  it('appends the brand and sets an absolute canonical URL', () => {
+    const metadata = buildMetadata({ title: 'Work', description: 'd', path: '/work' });
+    expect(metadata.title).toBe('Work');
+    expect(metadata.alternates?.canonical).toBe('https://sulvatech.com/work');
+    expect(metadata.openGraph?.title).toBe('Work | Sulva Tech');
+  });
+
+  it('can opt out of the title template', () => {
+    const metadata = buildMetadata({ title: 'Home | Sulva Tech', description: 'd', path: '/', absoluteTitle: true });
+    expect(metadata.title).toEqual({ absolute: 'Home | Sulva Tech' });
+    expect(metadata.openGraph?.title).toBe('Home | Sulva Tech');
+  });
+});
+
+describe('buildFaqJsonLd', () => {
+  it('builds a FAQPage', () => {
+    expect(buildFaqJsonLd([{ question: 'Q?', answer: 'A.' }])).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [{ '@type': 'Question', name: 'Q?', acceptedAnswer: { '@type': 'Answer', text: 'A.' } }],
+    });
   });
 });

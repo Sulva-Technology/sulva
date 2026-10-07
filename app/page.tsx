@@ -5,7 +5,6 @@ import CtaBand from '@/components/CtaBand';
 import HeroShowcase from '@/components/home/HeroShowcase';
 import ServicesShowcase from '@/components/home/ServicesShowcase';
 import InsightCard, { type InsightListItem } from '@/components/InsightCard';
-import StructuredData from '@/components/StructuredData';
 import Button from '@/components/ui/Button';
 import GradientField from '@/components/ui/GradientField';
 import Reveal from '@/components/ui/Reveal';
@@ -14,25 +13,19 @@ import FeaturedCaseStudy from '@/components/work/FeaturedCaseStudy';
 import WorkCard from '@/components/work/WorkCard';
 import { fetchPublishedInsights } from '@/lib/insights';
 import { reportError } from '@/lib/monitoring';
-import { getServiceExamples, services } from '@/lib/services';
-import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
+import { getServiceExamples, processSteps, services } from '@/lib/services';
+import { buildMetadata, siteConfig } from '@/lib/site';
 import { createClient } from '@/lib/supabase/server';
 import { caseStudies, getFeaturedCaseStudy, getOtherCaseStudies } from '@/lib/work';
 
 export const metadata = buildMetadata({
-  title: 'Websites that grow your brand',
+  title: `${siteConfig.seoTitle} | ${siteConfig.name}`,
+  absoluteTitle: true,
   description:
-    'Sulva Tech designs and builds websites, online stores and the systems behind them for founders and growing businesses. Every site comes with its own dashboard.',
+    'Sulva Tech is a Lagos web design company. We build websites, online stores and apps for founders and growing businesses, each with its own dashboard.',
   path: '/',
   keywords: ['web design agency Lagos', 'website with admin dashboard', 'Meal Direct'],
 });
-
-const steps = [
-  { title: 'Call', body: 'A 30-minute call about your business, what you need, and what it should cost.' },
-  { title: 'Plan & quote', body: 'A written plan: pages, features, price. You approve it before we start.' },
-  { title: 'Design & build', body: 'You see designs first, then a working site you can click through as we build.' },
-  { title: 'Launch & look after', body: 'We launch, walk you through your dashboard, and stay on hand for changes.' },
-];
 
 async function getLatestInsights(): Promise<InsightListItem[]> {
   try {
@@ -54,16 +47,14 @@ export default async function Home() {
 
   return (
     <>
-      <StructuredData data={buildBreadcrumbJsonLd([{ name: 'Home', path: '/' }])} />
-
       <section className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink px-5 pb-8 pt-32 text-white md:px-10 md:pb-10 md:pt-40">
         <GradientField variant="hero" solid={false} className="-z-10 opacity-80" />
         <div className="mx-auto flex w-full max-w-[1240px] flex-1 flex-col">
-          <Eyebrow tone="ink">Sulva — Lagos, Nigeria</Eyebrow>
+          <Eyebrow tone="ink">Web design &amp; development — Lagos, Nigeria</Eyebrow>
           <h1 className="display-xl mt-6 max-w-5xl">Websites that grow your brand.</h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-white/75">
-            We design and build websites — and the systems behind them — for founders and growing businesses. Every
-            site comes with its own dashboard, so you run it, not us.
+            We&apos;re a web design studio in Lagos. We design and build websites, online stores and the systems behind
+            them for founders and growing businesses. Every site comes with its own dashboard, so you run it, not us.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Button href="/contact">Start a project</Button>
@@ -103,7 +94,7 @@ export default async function Home() {
       <Section tone="paper" className="border-t border-ink/10" eyebrow="04 — How we work">
         <h2 className="display-lg max-w-3xl">From first call to launch.</h2>
         <ol className="mt-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, index) => (
+          {processSteps.map((step, index) => (
             <li key={step.title}>
               <span className="font-mono text-sm text-copper">0{index + 1}</span>
               <h3 className="mt-3 text-xl font-medium tracking-tight">{step.title}</h3>

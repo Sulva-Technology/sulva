@@ -1,4 +1,5 @@
-import { Check } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, Check } from 'lucide-react';
 import CtaBand from '@/components/CtaBand';
 import StructuredData from '@/components/StructuredData';
 import GlassPanel from '@/components/ui/GlassPanel';
@@ -11,11 +12,11 @@ import { buildBreadcrumbJsonLd, buildMetadata } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 export const metadata = buildMetadata({
-  title: 'Services',
+  title: 'Web Design, Ecommerce & App Development Services',
   description:
-    'Brand websites, online stores, and products & apps. Each comes with its own dashboard, so you run your business without waiting on us.',
+    'Website design, online stores and custom web apps, built in Lagos. Every project comes with its own dashboard, so you run your business without waiting on us.',
   path: '/services',
-  keywords: ['brand website design', 'ecommerce website Nigeria', 'web app development Lagos'],
+  keywords: ['web design services Lagos', 'ecommerce website Nigeria', 'web app development Lagos'],
 });
 
 export default function ServicesPage() {
@@ -27,7 +28,7 @@ export default function ServicesPage() {
   return (
     <>
       <StructuredData data={breadcrumbJsonLd} />
-      <PageHero eyebrow="Services" title="What we build." sub="Three things, done properly." />
+      <PageHero eyebrow="Services" title="What we build." sub="Website design, online stores and custom apps. Three things, done properly." />
 
       {services.map((service, index) => {
         const [lead, ...rest] = getServiceExamples(service);
@@ -41,7 +42,11 @@ export default function ServicesPage() {
           >
             <div className={cn('grid items-start gap-12 lg:grid-cols-2', index % 2 === 1 && 'lg:[&>*:first-child]:order-2')}>
               <Reveal>
-                <h2 className="display-md">{service.name}</h2>
+                <h2 className="display-md">
+                  <Link href={`/services/${service.slug}`} className="hover:text-copper">
+                    {service.name}
+                  </Link>
+                </h2>
                 <p className="mt-3 font-mono text-xs text-muted">{service.forWho}</p>
                 <p className="mt-6 text-lg leading-8 text-ink/80">{service.summary}</p>
                 <ul className="mt-8 space-y-3">
@@ -52,6 +57,12 @@ export default function ServicesPage() {
                     </li>
                   ))}
                 </ul>
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="mt-8 inline-flex items-center gap-2 font-medium text-ink underline decoration-copper underline-offset-4"
+                >
+                  More about {service.name.toLowerCase()} <ArrowRight size={16} aria-hidden="true" />
+                </Link>
               </Reveal>
               <Reveal delay={0.1}>
                 <WorkCard study={lead} />
